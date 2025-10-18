@@ -31,6 +31,10 @@ impl Average for Vec<i32> {
 }
 
 pub trait Median {
-    fn h_median() -> f64
+    fn h_median() -> f64;
+}
+
+impl Median for [f64] {
+    fn
 }
 
