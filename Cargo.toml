@@ -3,6 +3,8 @@ name = "h_math"
 version = "0.1.0"
 edition = "2024"
 authors = ["Henry Lier <henryaksellier@gmail.com>"]
+license = "MIT"
+description = "A Rust library for advanced mathematical computations."
 repository = "https://github.com/HK7Harr/h_math"
 
 
