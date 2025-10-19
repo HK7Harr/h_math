@@ -1,4 +1,6 @@
 
+
+// -------------------------------- Statistics ---------------------------------
 pub trait Average {
     fn h_average(&self) -> f64;
 }
@@ -255,3 +257,49 @@ impl ModusMult for Vec<i32> {
     }
 }
 
+
+
+// -------------------------------- General uses ---------------------------------
+
+pub trait Search {
+    type Output;
+    fn h_search(&self, value: Self::Output) -> bool;
+}
+
+impl Search for [f64] {
+    type Output = f64;
+    fn h_search(&self, value: Self::Output) -> bool {
+        for i in self {
+            if *i == value {
+                return true;
+            }
+        }
+        false
+    }
+}
+impl Search for Vec<f64> {
+    type Output = f64;
+    fn h_search(&self, value: Self::Output) -> bool {
+        self.as_slice().h_search(value)
+    }
+}
+impl Search for [i32] {
+    type Output = i32;
+    fn h_search(&self, value: Self::Output) -> bool {
+        for i in self {
+            if *i == value {
+                return true;
+            }
+        }
+        false
+    }
+}
+impl Search for Vec<i32> {
+    type Output = i32;
+    fn h_search(&self, value: Self::Output) -> bool {
+        self.as_slice().h_search(value)
+    }
+}
+
+
+// ----------------------------------- Random ----------------------------------
