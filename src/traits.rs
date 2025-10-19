@@ -1,3 +1,5 @@
+use core::panic;
+
 
 
 // -------------------------------- Statistics ---------------------------------
@@ -303,3 +305,91 @@ impl Search for Vec<i32> {
 
 
 // ----------------------------------- Random ----------------------------------
+
+
+
+// ------------------------------------ Geometry ------------------------------------
+pub trait CircleCircumference {
+    fn h_circle_circumference(&self) -> f64;
+}
+
+impl CircleCircumference for f64 {
+    fn h_circle_circumference(&self) -> f64 {
+        2.0 * std::f64::consts::PI * self
+    }
+}
+impl CircleCircumference for i32 {
+    fn h_circle_circumference(&self) -> f64 {
+        2.0 * std::f64::consts::PI * *self as f64
+    }
+}
+
+pub trait CircleArea {
+    fn h_circle_area(&self) -> f64;
+}
+impl CircleArea for f64 {
+    fn h_circle_area(&self) -> f64 {
+        std::f64::consts::PI * self * self
+    }
+}
+impl CircleArea for i32 {
+    fn h_circle_area(&self) -> f64 {
+        std::f64::consts::PI * (*self as f64) * (*self as f64)
+    }
+}
+pub trait SphereVolume {
+    fn h_sphere_volume(&self) -> f64;
+}
+impl SphereVolume for f64 {
+    fn h_sphere_volume(&self) -> f64 {
+        (4.0/3.0) * std::f64::consts::  PI * self * self * self
+    }
+}
+impl SphereVolume for i32 {
+    fn h_sphere_volume(&self) -> f64 {
+        (4.0/3.0) * std::f64::consts::  PI * (*self as f64) * (*self as f64) * (*self as f64)
+    }
+}
+
+pub trait SphereSurfaceArea {
+    fn h_sphere_surface_area(&self) -> f64;
+}
+
+impl SphereSurfaceArea for f64 {
+    fn h_sphere_surface_area(&self) -> f64 {
+        4.0 * std::f64::consts::PI * self * self
+    }
+}
+impl SphereSurfaceArea for i32 {
+    fn h_sphere_surface_area(&self) -> f64 {
+        4.0 * std::f64::consts::PI * (*self as f64) * (*self as f64)
+    }
+}
+
+// ------------------------------------ core math ------------------------------------
+
+pub trait Factorial {
+    fn h_factorial(&self) -> u64;
+}
+impl Factorial for i32 {
+    fn h_factorial(&self) -> u64 {
+        if *self < 0 {
+            panic!("Factorial is not defined for negative numbers");
+        }
+        let mut result: u64 = 1;
+        for i in 1..=*self as u64 {
+            result *= i;
+        }
+        result
+    }
+}
+
+impl Factorial for u32 {
+    fn h_factorial(&self) -> u64 {
+        let mut result: u64 = 1;
+        for i in 1..=*self as u64 {
+            result *= i;
+        }
+        result
+    }
+}
