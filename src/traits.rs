@@ -1,3 +1,5 @@
+
+
 pub trait Average {
     fn h_average(&self) -> f64;
 }
@@ -31,10 +33,40 @@ impl Average for Vec<i32> {
 }
 
 pub trait Median {
-    fn h_median() -> f64;
+    fn h_median(&self) -> f64;
 }
 
 impl Median for [f64] {
-    fn
+    fn h_median(&self) -> f64 {
+        if self.len() % 2 == 1 {
+            return self[(self.len()-1)/2];
+        }
+        else {
+            return (self[self.len()/2] + self[(self.len()/2)-1])/2.0;
+        }
+    }
+}
+
+impl Median for Vec<f64> {
+    fn h_median(&self) -> f64 {
+        self.as_slice().h_median()
+    }
+}
+
+impl Median for [i32] {
+    fn h_median(&self) -> f64 {
+        if self.len() % 2 == 1 {
+            return self[(self.len()-1)/2] as f64;
+        }
+        else {
+            return (self[self.len()/2] + self[(self.len()/2)-1]) as f64/2.0;
+        }
+    }
+}
+
+impl Median for Vec<i32> {
+    fn h_median(&self) -> f64 {
+        self.as_slice().h_median()
+    }
 }
 
