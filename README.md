@@ -7,6 +7,8 @@ evrything you will be calling if you use prelude will start with h_
 
 i will only be implementing .h_average() syntax
 
-most
+most of what you call will only work for data types: i32, f64, [i32], [f64], Vec<i32> Vec<f64>
 
 Documentation
+
+features:
