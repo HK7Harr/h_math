@@ -1,50 +1,51 @@
 use core::panic;
 
-
-
 // -------------------------------- Statistics ---------------------------------
+
 pub trait Average {
     fn h_average(&self) -> f64;
 }
 
-impl Average for [f64] {
+impl<T> Average for [T]
+where
+    T: Copy + Into<f64>,
+{
     fn h_average(&self) -> f64 {
-        if self.is_empty() { return 0.0; }
-        let sum: f64 = self.iter().copied().sum();
+        if self.is_empty() {
+            return 0.0;
+        }
+        let mut sum = 0.0;
+        for &x in self {
+            sum += x.into();
+        }
         sum / self.len() as f64
     }
 }
 
-impl Average for Vec<f64> {
+impl<T> Average for Vec<T>
+where
+    T: Copy + Into<f64>,
+{
     fn h_average(&self) -> f64 {
         self.as_slice().h_average()
     }
 }
 
-impl Average for [i32] {
-    fn h_average(&self) -> f64 {
-        if self.is_empty() { return 0.0; }
-        let sum: i32 = self.iter().copied().sum();
-        sum as f64 / self.len() as f64
-    }
-}
-
-impl Average for Vec<i32> {
-    fn h_average(&self) -> f64 {
-        self.as_slice().h_average()
-    }
-}
+// ---------------------------
 
 pub trait Median {
     fn h_median(&self) -> f64;
 }
 
-impl Median for [f64] {
+impl<T> Median for [T]
+where
+    T: Copy + Into<f64> + PartialOrd,
+{
     fn h_median(&self) -> f64 {
         if self.is_empty() {
             return 0.0;
         }
-        let mut sorted = self.to_vec();
+        let mut sorted: Vec<f64> = self.iter().map(|&x| x.into()).collect();
         sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
         let mid = sorted.len() / 2;
@@ -56,298 +57,200 @@ impl Median for [f64] {
     }
 }
 
-impl Median for Vec<f64> {
+impl<T> Median for Vec<T>
+where
+    T: Copy + Into<f64> + PartialOrd,
+{
     fn h_median(&self) -> f64 {
         self.as_slice().h_median()
     }
 }
 
-impl Median for [i32] {
-    fn h_median(&self) -> f64 {
-        if self.is_empty() {
-            return 0.0;
-        }
-        let mut sorted = self.to_vec();
-        sorted.sort();
-
-        let mid = sorted.len() / 2;
-        if sorted.len() % 2 == 1 {
-            sorted[mid] as f64
-        } else {
-            (sorted[mid - 1] + sorted[mid]) as f64 / 2.0
-        }
-    }
-}
-
-impl Median for Vec<i32> {
-    fn h_median(&self) -> f64 {
-        self.as_slice().h_median()
-    }
-}
+// ---------------------------
 
 pub trait Sum {
-    type Output;
-    fn h_sum(&self) -> Self::Output;
+    fn h_sum(&self) -> f64;
 }
 
-impl Sum for [f64] {
-    type Output = f64;
-    fn h_sum(&self) -> Self::Output {
-        if self.is_empty() {return 0.0;}
-        let mut sum: f64 = 0.0;
-        for i in self {
-            sum += i;
+impl<T> Sum for [T]
+where
+    T: Copy + Into<f64>,
+{
+    fn h_sum(&self) -> f64 {
+        let mut sum = 0.0;
+        for &x in self {
+            sum += x.into();
         }
         sum
     }
 }
 
-impl Sum for Vec<f64> {
-    type Output = f64;
-    fn h_sum(&self) -> Self::Output {
+impl<T> Sum for Vec<T>
+where
+    T: Copy + Into<f64>,
+{
+    fn h_sum(&self) -> f64 {
         self.as_slice().h_sum()
     }
 }
 
-impl Sum for [i32] {
-    type Output = i32;
-    fn h_sum(&self) -> Self::Output {
-        if self.is_empty() {return 0;}
-        let mut sum: i32 = 0;
-        for i in self {
-            sum += i;
-        }
-        sum
-    }
-}
-
-impl Sum for Vec<i32> {
-    type Output = i32;
-    fn h_sum(&self) -> Self::Output {
-        self.as_slice().h_sum()
-    }
-}
+// ---------------------------
 
 pub trait Variance {
-    type Output;
-    fn h_variance(&self) -> Self::Output;
+    fn h_variance(&self) -> f64;
 }
-impl Variance for [f64] {
-    type Output = f64;
-    fn h_variance(&self) -> Self::Output {
-        let sorted: Vec<f64> = self.to_vec();
-        sorted[sorted.len()-1] - sorted[0]
+
+impl<T> Variance for [T]
+where
+    T: Copy + Into<f64> + PartialOrd,
+{
+    fn h_variance(&self) -> f64 {
+        if self.len() < 2 {
+            return 0.0;
+        }
+        let mut sorted: Vec<f64> = self.iter().map(|&x| x.into()).collect();
+        sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        sorted[sorted.len() - 1] - sorted[0]
     }
 }
-impl Variance for Vec<f64> {
-    type Output = f64;
-    fn h_variance(&self) -> Self::Output {
+
+impl<T> Variance for Vec<T>
+where
+    T: Copy + Into<f64> + PartialOrd,
+{
+    fn h_variance(&self) -> f64 {
         self.as_slice().h_variance()
     }
 }
-impl Variance for [i32] {
-    type Output = i32;
-    fn h_variance(&self) -> Self::Output {
-        let sorted: Vec<i32> = self.to_vec();
-        sorted[sorted.len()-1] - sorted[0]
-    }
-}
-impl Variance for Vec<i32> {
-    type Output = i32;
-    fn h_variance(&self) -> Self::Output {
-        self.as_slice().h_variance()
-    }
-}
+
+// ---------------------------
 
 pub trait ModusMult {
-    type Output;
-    fn h_modus_mult(&self) -> Self::Output;
+    fn h_modus_mult(&self) -> Vec<f64>;
 }
-impl ModusMult for [f64] {
-    type Output = Vec<f64>;
-    fn h_modus_mult(&self) -> Self::Output {
+
+impl<T> ModusMult for [T]
+where
+    T: Copy + Into<f64> + PartialEq,
+{
+    fn h_modus_mult(&self) -> Vec<f64> {
         let mut list_modus: Vec<(f64, i32)> = vec![];
         let mut found_list: Vec<f64> = vec![];
-        
-        for i in self {
-            if !found_list.contains(i) {
-                found_list.push(*i);
-                list_modus.push((*i, 0));
+
+        for &x in self {
+            let val = x.into();
+            if !found_list.contains(&val) {
+                found_list.push(val);
+                list_modus.push((val, 0));
             }
         }
-        for i in self {
-            let x: f64 = *i;
+
+        for &x in self {
+            let val = x.into();
             for j in &mut list_modus {
-                if j.0 == x {
+                if j.0 == val {
                     j.1 += 1;
                 }
             }
         }
-        let mut max_count: (i32, i32) = (0, 0); // (index, count)
-        let mut index: i32 = 0;
-        for i in &list_modus {
-            if i.1 > max_count.1 {
-                max_count = (index, i.1);
+
+        let mut max_count = 0;
+        for &(_, count) in &list_modus {
+            if count > max_count {
+                max_count = count;
             }
-            index += 1;
         }
-        if max_count.1 == 1 {
+
+        if max_count <= 1 {
             return vec![];
         }
-        let mut modus_list: Vec<f64> = vec![];
-        for i in &list_modus {
-            if i.1 == max_count.1 {
-                modus_list.push(i.0);
-            }
-        }
-        return modus_list;
+
+        list_modus
+            .into_iter()
+            .filter(|(_, count)| *count == max_count)
+            .map(|(val, _)| val)
+            .collect()
     }
 }
 
-impl ModusMult for Vec<f64> {
-    type Output = Vec<f64>;
-    fn h_modus_mult(&self) -> Self::Output {
+impl<T> ModusMult for Vec<T>
+where
+    T: Copy + Into<f64> + PartialEq,
+{
+    fn h_modus_mult(&self) -> Vec<f64> {
         self.as_slice().h_modus_mult()
     }
 }
-
-impl ModusMult for [i32] {
-    type Output = Vec<i32>;
-    fn h_modus_mult(&self) -> Self::Output {
-        let mut list_modus: Vec<(i32, i32)> = vec![];
-        let mut found_list: Vec<i32> = vec![];
-        
-        for i in self {
-            if !found_list.contains(i) {
-                found_list.push(*i);
-                list_modus.push((*i, 0));
-            }
-        }
-        for i in self {
-            let x: i32 = *i;
-            for j in &mut list_modus {
-                if j.0 == x {
-                    j.1 += 1;
-                }
-            }
-        }
-        let mut max_count: (i32, i32) = (0, 0); // (index, count)
-        let mut index: i32 = 0;
-        for i in &list_modus {
-            if i.1 > max_count.1 {
-                max_count = (index, i.1);
-            }
-            index += 1;
-        }
-        if max_count.1 == 1 {
-            return vec![];
-        }
-        let mut modus_list: Vec<i32> = vec![];
-        for i in &list_modus {
-            if i.1 == max_count.1 {
-                modus_list.push(i.0);
-            }
-        }
-        return modus_list;
-    }
-}
-
-impl ModusMult for Vec<i32> {
-    type Output = Vec<i32>;
-    fn h_modus_mult(&self) -> Self::Output {
-        self.as_slice().h_modus_mult()
-    }
-}
-
-
 
 // -------------------------------- General uses ---------------------------------
 
 pub trait Search {
-    type Output;
-    fn h_search(&self, value: Self::Output) -> bool;
+    fn h_search(&self, value: f64) -> bool;
 }
 
-impl Search for [f64] {
-    type Output = f64;
-    fn h_search(&self, value: Self::Output) -> bool {
-        for i in self {
-            if *i == value {
+impl<T> Search for [T]
+where
+    T: Copy + Into<f64> + PartialEq,
+{
+    fn h_search(&self, value: f64) -> bool {
+        for &x in self {
+            if x.into() == value {
                 return true;
             }
         }
         false
     }
 }
-impl Search for Vec<f64> {
-    type Output = f64;
-    fn h_search(&self, value: Self::Output) -> bool {
+
+impl<T> Search for Vec<T>
+where
+    T: Copy + Into<f64> + PartialEq,
+{
+    fn h_search(&self, value: f64) -> bool {
         self.as_slice().h_search(value)
     }
 }
-impl Search for [i32] {
-    type Output = i32;
-    fn h_search(&self, value: Self::Output) -> bool {
-        for i in self {
-            if *i == value {
-                return true;
-            }
-        }
-        false
-    }
-}
-impl Search for Vec<i32> {
-    type Output = i32;
-    fn h_search(&self, value: Self::Output) -> bool {
-        self.as_slice().h_search(value)
-    }
-}
-
-
-// ----------------------------------- Random ----------------------------------
-
-
 
 // ------------------------------------ Geometry ------------------------------------
+
 pub trait CircleCircumference {
     fn h_circle_circumference(&self) -> f64;
 }
 
-impl CircleCircumference for f64 {
+impl<T> CircleCircumference for T
+where
+    T: Copy + Into<f64>,
+{
     fn h_circle_circumference(&self) -> f64 {
-        2.0 * std::f64::consts::PI * self
-    }
-}
-impl CircleCircumference for i32 {
-    fn h_circle_circumference(&self) -> f64 {
-        2.0 * std::f64::consts::PI * *self as f64
+        2.0 * std::f64::consts::PI * (*self).into()
     }
 }
 
 pub trait CircleArea {
     fn h_circle_area(&self) -> f64;
 }
-impl CircleArea for f64 {
+
+impl<T> CircleArea for T
+where
+    T: Copy + Into<f64>,
+{
     fn h_circle_area(&self) -> f64 {
-        std::f64::consts::PI * self * self
+        let r = (*self).into();
+        std::f64::consts::PI * r * r
     }
 }
-impl CircleArea for i32 {
-    fn h_circle_area(&self) -> f64 {
-        std::f64::consts::PI * (*self as f64) * (*self as f64)
-    }
-}
+
 pub trait SphereVolume {
     fn h_sphere_volume(&self) -> f64;
 }
-impl SphereVolume for f64 {
+
+impl<T> SphereVolume for T
+where
+    T: Copy + Into<f64>,
+{
     fn h_sphere_volume(&self) -> f64 {
-        (4.0/3.0) * std::f64::consts::  PI * self * self * self
-    }
-}
-impl SphereVolume for i32 {
-    fn h_sphere_volume(&self) -> f64 {
-        (4.0/3.0) * std::f64::consts::  PI * (*self as f64) * (*self as f64) * (*self as f64)
+        let r = (*self).into();
+        (4.0 / 3.0) * std::f64::consts::PI * r * r * r
     }
 }
 
@@ -355,22 +258,22 @@ pub trait SphereSurfaceArea {
     fn h_sphere_surface_area(&self) -> f64;
 }
 
-impl SphereSurfaceArea for f64 {
+impl<T> SphereSurfaceArea for T
+where
+    T: Copy + Into<f64>,
+{
     fn h_sphere_surface_area(&self) -> f64 {
-        4.0 * std::f64::consts::PI * self * self
-    }
-}
-impl SphereSurfaceArea for i32 {
-    fn h_sphere_surface_area(&self) -> f64 {
-        4.0 * std::f64::consts::PI * (*self as f64) * (*self as f64)
+        let r = (*self).into();
+        4.0 * std::f64::consts::PI * r * r
     }
 }
 
-// ------------------------------------ core math ------------------------------------
+// ------------------------------------ Core math ------------------------------------
 
 pub trait Factorial {
     fn h_factorial(&self) -> u64;
 }
+
 impl Factorial for i32 {
     fn h_factorial(&self) -> u64 {
         if *self < 0 {
@@ -391,5 +294,34 @@ impl Factorial for u32 {
             result *= i;
         }
         result
+    }
+}
+
+pub trait SQRTDegree {
+    fn h_sqrt_degree(&self, degree: u32) -> f64;
+}
+
+impl<T> SQRTDegree for T
+where
+    T: Copy + Into<f64>,
+{
+    fn h_sqrt_degree(&self, degree: u32) -> f64 {
+        (*self).into().powf(1.0 / degree as f64)
+    }
+}
+
+// ------------------------------------ Finance ------------------------------------
+
+pub trait ROI {
+    fn h_return_on_investment(&self, new_value: f64) -> f64;
+}
+
+impl<T> ROI for T
+where
+    T: Copy + Into<f64>,
+{
+    fn h_return_on_investment(&self, new_value: f64) -> f64 {
+        let start = (*self).into();
+        (new_value - start) / start * 100.0
     }
 }
