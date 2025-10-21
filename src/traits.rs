@@ -310,6 +310,26 @@ where
     }
 }
 
+pub trait SimpleSigma {
+    fn h_simple_sigma(&self, repetitions: u32, steps: f64) -> f64;  // self = i
+}
+
+impl<T> SimpleSigma for T
+where 
+    T: Copy + Into<f64>,
+{
+    fn h_simple_sigma(&self, repetitions: u32, steps: f64) -> f64 {
+        let mut i: f64 = (*self).into();
+        let mut sum: f64 = 0.0;
+        for _ in 1..=repetitions {
+            sum += i;
+            i += steps;
+        }
+        sum
+    }
+}
+
+
 // ------------------------------------ Finance ------------------------------------
 
 pub trait ROI {
@@ -325,3 +345,34 @@ where
         (new_value - start) / start * 100.0
     }
 }
+
+pub trait DiscountedPrice {
+    fn h_discounted_price(&self, discount_percent: f64) -> f64;
+}
+
+impl<T> DiscountedPrice for T
+where
+    T: Copy + Into<f64>,
+{
+    fn h_discounted_price(&self, discount_percent: f64) -> f64 {
+        let percent_discount_opposite: f64 = 1.0 - discount_percent / 100.0;
+        percent_discount_opposite * (*self).into()
+    }
+}
+
+pub trait IncreasedPrice {
+    fn h_increase_price(&self, increase_percent: f64) -> f64;
+}
+
+impl<T> IncreasedPrice for T
+where
+    T: Copy + Into<f64>,
+{
+    fn h_increase_price(&self, increase_percent: f64) -> f64 {
+        let percent_increas_plus_one: f64 = 1.0 + increase_percent / 100.0;
+        percent_increas_plus_one * (*self).into()
+    }
+}
+
+
+
