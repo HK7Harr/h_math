@@ -12,3 +12,7 @@ pub use traits::CircleArea;
 pub use traits::SphereSurfaceArea;
 pub use traits::SphereVolume;
 pub use traits::Factorial;  
+pub use traits::ROI;
+pub use traits::SimpleSigma;
+pub use traits::IncreasedPrice;
+pub use traits::DiscountedPrice;
