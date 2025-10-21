@@ -63,9 +63,26 @@ h_sqrt_degree:
     let num = 27.0;
     num.h_sqrt_degree(3); // 3.0
 
+h_simple_sigma:
+    let start = 1.0;
+    let sum = start.h_simple_sigma(5, 1.0); // 15.0 (1+2+3+4+5)
+
 h_return_on_investment:
     let start = 100.0;
     start.h_return_on_investment(150.0); // 50%
+
+h_discounted_price:
+    let price = 200.0;
+    price.h_discounted_price(20.0); // 160.0
+
+h_increase_price:
+    let price = 200.0;
+    price.h_increase_price(20.0); // 240.0
+
+
+
+
+
 
 
 
