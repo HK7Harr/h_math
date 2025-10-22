@@ -629,6 +629,64 @@ where
     }
 }
 
+pub trait ListToHashMap<V> {
+    type Key;
+    type Value;
+
+    fn h_list_to_hashmap(&self, values: &[V]) -> HashMap<Self::Key, Self::Value>
+    where
+        Self::Key: Eq + Hash + Clone,
+        Self::Value: Clone;
+}
+
+
+impl<K, V> ListToHashMap<V> for [K]
+where
+    K: Eq + Hash + Clone,
+    V: Clone,
+{
+    type Key = K;
+    type Value = V;
+
+    fn h_list_to_hashmap(&self, values: &[V]) -> HashMap<Self::Key, Self::Value> {
+        let keys: &[K] = self;
+
+        if keys.len() != values.len() {
+            panic!("Keys and values must have the same length");
+        }
+
+        let mut set = HashSet::new();
+        let mut map = HashMap::new();
+
+        // Check for duplicate keys
+        for key in keys.iter() {
+            if !set.insert(key.clone()) {
+                panic!("Duplicate key found in h_vector_to_hashmap");
+            }
+        }
+
+        // Build the HashMap
+        for i in 0..keys.len() {
+            map.insert(keys[i].clone(), values[i].clone());
+        }
+
+        map
+    }
+}
+
+impl<K, V> ListToHashMap<V> for Vec<K>
+where
+    K: Eq + Hash + Clone,
+    V: Clone,
+{
+    type Key = K;
+    type Value = V;
+
+    fn h_list_to_hashmap(&self, values: &[V]) -> HashMap<Self::Key, Self::Value> {
+        self.as_slice().h_list_to_hashmap(values)
+    }
+}
+
 
 
 

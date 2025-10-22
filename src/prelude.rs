@@ -13,4 +13,22 @@ pub use crate::traits::ROI;
 pub use crate::traits::SimpleSigma;
 pub use crate::traits::IncreasedPrice;
 pub use crate::traits::DiscountedPrice;
+pub use crate::traits::CelsiusToFahrenheit;
+pub use crate::traits::FahrenheitToCelsius;
+pub use crate::traits::KelvinToCelsius;
+pub use crate::traits::CelsiusToKelvin;
+pub use crate::traits::KelvinToFahrenheit;
+pub use crate::traits::FahrenheitToKelvin;
+pub use crate::traits::CentimetersToDecimeters;
+pub use crate::traits::MetersToKilometers;
+pub use crate::traits::KilometersToMeters;
+pub use crate::traits::DecimetersToCentimeters;
+pub use crate::traits::CentimetersToInches;
+pub use crate::traits::InchesToCentimeters;
+pub use crate::traits::CentimetersToMillimeters;
+pub use crate::traits::MillimetersToCentimeters;
+pub use crate::traits::HashMapKeysToHashSet;
+pub use crate::traits::HashMapValuesToHashSet;
+pub use crate::traits::ListToHashMap;
+
 
