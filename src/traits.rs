@@ -1,4 +1,6 @@
 use core::panic;
+use std::collections::{HashMap, HashSet};
+use std::hash::Hash;
 
 // -------------------------------- Statistics ---------------------------------
 
@@ -585,6 +587,48 @@ where
     }
 }
 
-// --------------------------- functionality
+// --------------------------- functionality --------------------------------
+
+pub trait HashMapValuesToHashSet<V>
+where
+    V: Eq + Hash + Clone,
+{
+    fn h_hashmap_values_to_hashset(&self) -> HashSet<V>;
+}
+
+impl<K, V> HashMapValuesToHashSet<V> for HashMap<K, V>
+where
+    V: Eq + Hash + Clone,
+{
+    fn h_hashmap_values_to_hashset(&self) -> HashSet<V> {
+        let mut set: HashSet<V> = HashSet::new();
+        for (_key, value) in self.iter() {
+            set.insert(value.clone());
+        }
+        set
+    }
+}
+
+pub trait HashMapKeysToHashSet<K>
+where
+    K: Eq + Hash + Clone,
+{
+    fn h_hashmap_keys_to_hashset(&self) -> HashSet<K>;
+}
+
+impl<K, V> HashMapKeysToHashSet<K> for HashMap<K, V>
+where
+    K: Eq + Hash + Clone,
+{
+    fn h_hashmap_keys_to_hashset(&self) -> HashSet<K> {
+        let mut set: HashSet<K> = HashSet::new();
+        for (key, _value) in self.iter() {
+            set.insert(key.clone());
+        }
+        set
+    }
+}
+
+
 
 
