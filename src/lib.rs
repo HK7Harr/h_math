@@ -33,4 +33,5 @@ pub use traits::MillimetersToCentimeters;
 pub use traits::HashMapKeysToHashSet;
 pub use traits::HashMapValuesToHashSet;
 pub use traits::ListToHashMap;
+pub use traits::ListToHashSet;
 

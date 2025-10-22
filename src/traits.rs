@@ -687,6 +687,39 @@ where
     }
 }
 
+pub trait ListToHashSet {
+    type Item;
+
+    fn h_list_to_hashset(&self) -> HashSet<Self::Item>
+    where
+        Self::Item: Eq + Hash + Clone;
+}
+
+impl<T> ListToHashSet for [T]
+where
+    T: Eq + Hash + Clone,
+{
+    type Item = T;
+
+    fn h_list_to_hashset(&self) -> HashSet<Self::Item> {
+        let mut set = HashSet::new();
+        for item in self.iter() {
+            set.insert(item.clone());
+        }
+        set
+    }
+}
+
+impl<T> ListToHashSet for Vec<T>
+where
+    T: Eq + Hash + Clone,
+{
+    type Item = T;
+
+    fn h_list_to_hashset(&self) -> HashSet<Self::Item> {
+        self.as_slice().h_list_to_hashset()
+    }
+}
 
 
 

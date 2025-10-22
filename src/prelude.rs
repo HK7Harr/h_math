@@ -30,5 +30,6 @@ pub use crate::traits::MillimetersToCentimeters;
 pub use crate::traits::HashMapKeysToHashSet;
 pub use crate::traits::HashMapValuesToHashSet;
 pub use crate::traits::ListToHashMap;
+pub use crate::traits::ListToHashSet;
 
 
