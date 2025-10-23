@@ -33,7 +33,7 @@ where
     }
 }
 
-// ---------------------------
+
 
 pub trait Median {
     fn h_median(&self) -> f64;
@@ -96,7 +96,6 @@ where
     }
 }
 
-// ---------------------------
 
 pub trait Variance {
     fn h_variance(&self) -> f64;
@@ -720,6 +719,75 @@ where
         self.as_slice().h_list_to_hashset()
     }
 }
+
+pub trait Tof64 {
+    fn h_f64(&self) -> f64;
+}
+
+impl<T> Tof64 for T 
+where 
+    T: Copy + Into<f64>,
+{
+    fn h_f64(&self) -> f64 {
+        (*self).into()
+    }
+}
+
+pub trait Toi32 {
+    fn h_i32(&self) -> i32;
+}
+
+impl<T> Toi32 for T 
+where 
+    T: Copy + Into<i32>,
+{
+    fn h_i32(&self) -> i32 {
+        (*self).into()
+    }
+}
+
+
+
+// --------------------------------- Algebra ------------------------------
+
+pub fn h_quadratic_equation<A,B,C>(a: A, b: B, c: C) -> (f64, f64)
+where
+    A: Copy + Into<f64>,
+    B: Copy + Into<f64>,
+    C: Copy + Into<f64>,
+{
+    let a_f = a.into();
+    let b_f = b.into();
+    let c_f = c.into();
+
+    let discriminant = b_f * b_f - 4.0 * a_f * c_f;
+
+    if discriminant < 0.0 {
+        panic!("No real roots exist");
+    }
+
+    let sqrt_discriminant = discriminant.sqrt();
+    let root1: f64 = (-b_f + sqrt_discriminant) / (2.0 * a_f);
+    let root2 = (-b_f - sqrt_discriminant) / (2.0 * a_f);
+
+    (root1, root2)
+}
+
+pub fn h_simple_eq_checker_x<NL, XL, NR, XR, X>(x_value: X, num_left: NL, x_left: XL, num_right: NR, x_right: XR) -> bool 
+where
+    NL: Copy + Into<f64>,
+    XL: Copy + Into<f64>,
+    NR: Copy + Into<f64>,
+    XR: Copy + Into<f64>,
+    X: Copy + Into<f64>,
+{
+    if x_left.into()*x_value.into() + num_left.into() == x_right.into()*x_value.into() + num_right.into() {
+        return true;
+    }
+    false
+}
+
+
 
 
 

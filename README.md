@@ -4,7 +4,7 @@ Description:
 `h_math` is a general-purpose math library (crate) for Rust.
 
 It provides statistical, geometric, core math, and finance-related calculations
-through simple and intuitive traits.
+through simple and intuitive traits and functions.
 
 Usage:
 use h_math::prelude::*;
