@@ -349,31 +349,35 @@ where
 }
 
 pub trait DiscountedPrice {
-    fn h_discounted_price(&self, discount_percent: f64) -> f64;
+    fn h_decreased_price(&self, decrease_percent: f64) -> f64;
 }
 
 impl<T> DiscountedPrice for T
 where
     T: Copy + Into<f64>,
 {
-    fn h_discounted_price(&self, discount_percent: f64) -> f64 {
-        let percent_discount_opposite: f64 = 1.0 - discount_percent / 100.0;
+    fn h_decreased_price(&self, decrease_percent: f64) -> f64 {
+        let percent_discount_opposite: f64 = 1.0 - decrease_percent / 100.0;
         percent_discount_opposite * (*self).into()
     }
 }
 
 pub trait IncreasedPrice {
-    fn h_increase_price(&self, increase_percent: f64) -> f64;
+    fn h_increased_price(&self, increase_percent: f64) -> f64;
 }
 
 impl<T> IncreasedPrice for T
 where
     T: Copy + Into<f64>,
 {
-    fn h_increase_price(&self, increase_percent: f64) -> f64 {
+    fn h_increased_price(&self, increase_percent: f64) -> f64 {
         let percent_increas_plus_one: f64 = 1.0 + increase_percent / 100.0;
         percent_increas_plus_one * (*self).into()
     }
+}
+
+pub trait NumAfterTaxBracketStyle<P> {
+    fn h_num_after_taxes_bracket_style(&self, tax_percent: f64) -> f64;
 }
 
 // ------------------------------------ Temperature ------------------------------------
@@ -849,6 +853,31 @@ pub fn h_input_data_single_f64(length: i32) -> Vec<f64> { // if length is <= 0; 
         count += 1;
     }
 }
+
+pub fn h_input_data_single_i32(length: i32) -> Vec<i32> { // if length is <= 0; stop the inputs with: "<<"
+    let mut count: u32 = 1;
+    let mut vec: Vec<i32> = vec![];
+    loop {
+        if (count - 1) as i32 == length && length > 0 {
+            return vec;
+        }
+        let mut input: String = String::new();
+        println!("data point {}: ", count);
+        io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read line");
+        if length <= 0 && input.trim() == "<<" {
+            return vec;
+        }
+        let num: i32 = input.trim().parse().expect("Please enter a valid number!");
+        if num == 0 {
+            continue;
+        }
+        vec.push(num);
+        count += 1;
+    }
+}
+
 
 
 
