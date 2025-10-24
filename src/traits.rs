@@ -1,6 +1,7 @@
 use core::panic;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
+use std::io;
 
 // -------------------------------- Statistics ---------------------------------
 
@@ -746,6 +747,42 @@ where
     }
 }
 
+pub trait ToVecf64 {
+    fn h_to_vec_f64(&self) -> Vec<f64>;
+}
+
+impl<T> ToVecf64 for Vec<T> 
+where 
+    T: Copy + Into<f64>,
+{
+    fn h_to_vec_f64(&self) -> Vec<f64> {
+        let mut new_vec: Vec<f64> = Vec::new();
+        for i in self {
+            new_vec.push((*i).into());
+        }
+        return new_vec;
+    }
+}
+
+pub trait ToVeci32 {
+    fn h_to_vec_i32(&self) -> Vec<i32>;
+}
+
+impl<T> ToVeci32 for Vec<T> 
+where 
+    T: Copy + Into<i32>,
+{
+    fn h_to_vec_i32(&self) -> Vec<i32> {
+        let mut new_vec: Vec<i32> = Vec::new();
+        for i in self {
+            new_vec.push((*i).into());
+        }
+        return new_vec;
+    }
+}
+
+
+
 
 
 // --------------------------------- Algebra ------------------------------
@@ -768,7 +805,7 @@ where
 
     let sqrt_discriminant = discriminant.sqrt();
     let root1: f64 = (-b_f + sqrt_discriminant) / (2.0 * a_f);
-    let root2 = (-b_f - sqrt_discriminant) / (2.0 * a_f);
+    let root2: f64 = (-b_f - sqrt_discriminant) / (2.0 * a_f);
 
     (root1, root2)
 }
@@ -786,6 +823,34 @@ where
     }
     false
 }
+
+// -------------------------------- Input Terminal ------------------------------
+
+pub fn h_input_data_single_f64(length: i32) -> Vec<f64> { // if length is <= 0; stop the inputs with: "<<"
+    let mut count: u32 = 1;
+    let mut vec: Vec<f64> = vec![];
+    loop {
+        if (count - 1) as i32 == length && length > 0 {
+            return vec;
+        }
+        let mut input: String = String::new();
+        println!("data point {}: ", count);
+        io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read line");
+        if length <= 0 && input.trim() == "<<" {
+            return vec;
+        }
+        let num: f64 = input.trim().parse().expect("Please enter a valid number!");
+        if num == 0.0 {
+            continue;
+        }
+        vec.push(num);
+        count += 1;
+    }
+}
+
+
 
 
 

@@ -34,4 +34,11 @@ pub use traits::HashMapKeysToHashSet;
 pub use traits::HashMapValuesToHashSet;
 pub use traits::ListToHashMap;
 pub use traits::ListToHashSet;
+pub use traits::Tof64;
+pub use traits::Toi32;
+pub use traits::h_input_data_single_f64;
+pub use traits::h_quadratic_equation;
+pub use traits::h_simple_eq_checker_x;
+pub use traits::ToVecf64;
+pub use traits::ToVeci32;
 

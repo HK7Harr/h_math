@@ -31,5 +31,12 @@ pub use crate::traits::HashMapKeysToHashSet;
 pub use crate::traits::HashMapValuesToHashSet;
 pub use crate::traits::ListToHashMap;
 pub use crate::traits::ListToHashSet;
+pub use crate::traits::Tof64;
+pub use crate::traits::Toi32;
+pub use crate::traits::h_input_data_single_f64;
+pub use crate::traits::h_quadratic_equation;
+pub use crate::traits::h_simple_eq_checker_x;
+pub use crate::traits::ToVecf64;
+pub use crate::traits::ToVeci32;
 
 
