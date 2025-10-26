@@ -376,8 +376,32 @@ where
     }
 }
 
-pub trait NumAfterTaxBracketStyle<P> {
-    fn h_num_after_taxes_bracket_style(&self, tax_percent: f64) -> f64;
+    /// Key = percent tax, 
+    /// Value = which value when you are over the percent is for but it wont count for evrything over,
+    /// Requirements: the values have to go in ascending order
+pub trait WealthAfterTaxBracketStyle<W> 
+where
+    W: Copy + Into<f64>,
+{
+    fn h_wealth_after_taxes_bracket_style(&self, current_wealth: W) -> f64; // UNFINISHED
+}
+
+impl<K, V, W> WealthAfterTaxBracketStyle<W> for HashMap<K, V> 
+where       
+    K: Copy + Into<f64>,
+    V: Copy + Into<f64>,
+    W: Copy + Into<f64>,
+{
+    fn h_wealth_after_taxes_bracket_style(&self, current_wealth: W) -> f64 {
+        let mut last: f64 = 0.0;
+        for (_p, v) in self.iter() {
+            if (*v).into() < last {
+                panic!("your values must be ordered: h_wealth__after_taxes_bracket_style");
+            }
+            last = (*v).into()
+        }
+        return 0.0;
+    }
 }
 
 // ------------------------------------ Temperature ------------------------------------
