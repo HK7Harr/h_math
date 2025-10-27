@@ -10,7 +10,7 @@ pub use crate::traits::SphereSurfaceArea;
 pub use crate::traits::SphereVolume;
 pub use crate::traits::Factorial;
 pub use crate::traits::ROI;
-pub use crate::traits::SimpleSigma;
+pub use crate::traits::h_sigma;
 pub use crate::traits::IncreasedPrice;
 pub use crate::traits::DiscountedPrice;
 pub use crate::traits::CelsiusToFahrenheit;
@@ -34,9 +34,10 @@ pub use crate::traits::ListToHashSet;
 pub use crate::traits::Tof64;
 pub use crate::traits::Toi32;
 pub use crate::traits::h_input_data_single_f64;
+pub use crate::traits::h_input_data_single_i32;
 pub use crate::traits::h_quadratic_equation;
 pub use crate::traits::h_simple_eq_checker_x;
 pub use crate::traits::ToVecf64;
 pub use crate::traits::ToVeci32;
-
+pub use crate::traits::ValidateInput;
 

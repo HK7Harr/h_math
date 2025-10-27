@@ -312,24 +312,22 @@ where
     }
 }
 
-pub trait SimpleSigma {
-    fn h_simple_sigma(&self, repetitions: u32, steps: f64) -> f64;  // self = i
-}
 
-impl<T> SimpleSigma for T
+
+pub fn h_sigma<T>(start: T, repetitions: u32, steps: T) -> f64
 where 
     T: Copy + Into<f64>,
 {
-    fn h_simple_sigma(&self, repetitions: u32, steps: f64) -> f64 {
-        let mut i: f64 = (*self).into();
+    let mut i: f64 = start.into();
         let mut sum: f64 = 0.0;
         for _ in 1..=repetitions {
             sum += i;
-            i += steps;
+            i += steps.into();
         }
         sum
-    }
 }
+
+
 
 
 // ------------------------------------ Finance ------------------------------------
@@ -373,34 +371,6 @@ where
     fn h_increased_price(&self, increase_percent: f64) -> f64 {
         let percent_increas_plus_one: f64 = 1.0 + increase_percent / 100.0;
         percent_increas_plus_one * (*self).into()
-    }
-}
-
-    /// Key = percent tax, 
-    /// Value = which value when you are over the percent is for but it wont count for evrything over,
-    /// Requirements: the values have to go in ascending order
-pub trait WealthAfterTaxBracketStyle<W> 
-where
-    W: Copy + Into<f64>,
-{
-    fn h_wealth_after_taxes_bracket_style(&self, current_wealth: W) -> f64; // UNFINISHED
-}
-
-impl<K, V, W> WealthAfterTaxBracketStyle<W> for HashMap<K, V> 
-where       
-    K: Copy + Into<f64>,
-    V: Copy + Into<f64>,
-    W: Copy + Into<f64>,
-{
-    fn h_wealth_after_taxes_bracket_style(&self, current_wealth: W) -> f64 {
-        let mut last: f64 = 0.0;
-        for (_p, v) in self.iter() {
-            if (*v).into() < last {
-                panic!("your values must be ordered: h_wealth__after_taxes_bracket_style");
-            }
-            last = (*v).into()
-        }
-        return 0.0;
     }
 }
 
@@ -902,6 +872,78 @@ pub fn h_input_data_single_i32(length: i32) -> Vec<i32> { // if length is <= 0; 
     }
 }
 
+
+#[derive(PartialEq)]
+pub enum InputType {
+    Lowercase,
+    Uppercase,
+    Letters, // Lowercase + Uppercase
+    Integer,
+}
+
+pub trait ValidateInput {
+    fn h_validate_input(&self, input_requirements: InputType) -> Result<(), String>;
+}
+
+impl ValidateInput for String {
+    fn h_validate_input(&self, input_requirements: InputType) -> Result<(), String> {
+        if self.is_empty() {
+            return Err(String::from("The input is empty"));
+        }
+
+        if input_requirements == InputType::Lowercase {
+            if !self.chars().all(|c| c.is_ascii_lowercase()) {
+                let lowercase: HashSet<char> = ('a'..='z').collect();
+                let mut unexcpected: Vec<char> = vec![];
+                for c in self.chars() {
+                    if !lowercase.contains(&c) {
+                        unexcpected.push(c);
+                    }
+                }
+                return Err(format!("Invalid input, lowercase letters only. Found: {:?}", unexcpected));
+            }
+        }
+        else if input_requirements == InputType::Uppercase {
+            if !self.chars().all(|c| c.is_ascii_uppercase()) {
+                let uppercase: HashSet<char> = ('A'..='Z').collect();
+                let mut unexcpected: Vec<char> = vec![];
+                for c in self.chars() {
+                    if !uppercase.contains(&c) {
+                        unexcpected.push(c);
+                    }
+                }
+                return Err(format!("Invalid input, requirement: uppercase letters only. Found: {:?}", unexcpected));
+            }
+        }
+        else if input_requirements == InputType::Letters {
+            if !self.chars().all(|c: char| c.is_ascii_uppercase() || c.is_ascii_uppercase()) {
+                let characters: HashSet<char> = ('A'..='Z').chain('a'..='z').collect();
+                let mut unexcpected: Vec<char> = vec![];
+                for c in self.chars() {
+                    if !characters.contains(&c) {
+                        unexcpected.push(c);
+                    }
+                }
+                return Err(format!("Invalid input, requirement: letters only. Found: {:?}", unexcpected));
+            }
+        }
+
+        else if input_requirements == InputType::Integer {
+            if self.parse::<i32>().is_err() {
+                let characters: HashSet<char> = ('0'..='9').collect();
+                let mut unexcpected: Vec<char> = vec![];
+                for c in self.chars() {
+                    if !characters.contains(&c) {
+                        unexcpected.push(c);
+                    }
+                }
+                return Err(format!("Invalid input, requirement: whole Integer. Found: {:?}", unexcpected));
+            }
+        }
+
+        Ok(())
+    }
+}
 
 
 
