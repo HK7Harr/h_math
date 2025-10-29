@@ -21,6 +21,7 @@ pub use crate::traits::KelvinToFahrenheit;
 pub use crate::traits::FahrenheitToKelvin;
 pub use crate::traits::CentimetersToDecimeters;
 pub use crate::traits::MetersToKilometers;
+pub use crate::traits::MetersToCentimeters;
 pub use crate::traits::KilometersToMeters;
 pub use crate::traits::DecimetersToCentimeters;
 pub use crate::traits::CentimetersToInches;
