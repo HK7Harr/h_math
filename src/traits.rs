@@ -873,7 +873,7 @@ pub fn h_input_data_single_i32(length: i32) -> Vec<i32> { // if length is <= 0; 
 }
 
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq, Debug)]
 pub enum InputType {
     Lowercase,
     Uppercase,
@@ -944,6 +944,8 @@ impl ValidateInput for String {
         Ok(())
     }
 }
+
+
 
 
 
