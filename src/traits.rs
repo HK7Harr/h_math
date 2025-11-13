@@ -270,6 +270,36 @@ where
     }
 }
 
+pub fn h_pythagorean_theorem<A, B>(a: A, b: B) -> f64
+where
+    A: Copy + Into<f64>,
+    B: Copy + Into<f64>,
+{
+    let a_f = a.into();
+    let b_f = b.into();
+    (a_f.powf(2.0) + b_f.powf(2.0)).sqrt()
+}
+
+pub fn h_reverse_pythagorean_theorem<K, H>(x: K, h: H) -> f64
+where 
+    K: Copy + Into<f64>,
+    H: Copy + Into<f64>,
+{
+    let xfc: f64 = x.into().powf(2.0);
+    let hfc: f64 = h.into().powf(2.0);
+    (hfc - xfc).powf(0.5)
+}
+
+pub fn h_find_equal_legs_from_hypotenuse<H>(h: H) -> f64 
+where 
+    H: Copy + Into<f64>,
+{
+    let hfc: f64 = h.into().powf(2.0);
+    (hfc / 2.0).sqrt()
+}
+
+
+
 // ------------------------------------ Core math ------------------------------------
 
 pub trait Factorial {

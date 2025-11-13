@@ -11,6 +11,7 @@ pub use crate::traits::SphereVolume;
 pub use crate::traits::Factorial;
 pub use crate::traits::ROI;
 pub use crate::traits::h_sigma;
+pub use crate::traits::SQRTDegree;
 pub use crate::traits::IncreasedPrice;
 pub use crate::traits::DiscountedPrice;
 pub use crate::traits::CelsiusToFahrenheit;
