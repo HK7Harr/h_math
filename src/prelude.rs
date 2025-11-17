@@ -42,4 +42,6 @@ pub use crate::traits::h_simple_eq_checker_x;
 pub use crate::traits::ToVecf64;
 pub use crate::traits::ToVeci32;
 pub use crate::traits::ValidateInput;
-
+pub use crate::traits::h_pythagorean_theorem;
+pub use crate::traits::h_reverse_pythagorean_theorem;
+pub use crate::traits::h_find_equal_legs_from_hypotenuse;
