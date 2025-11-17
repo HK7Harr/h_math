@@ -45,3 +45,8 @@ pub use crate::traits::ValidateInput;
 pub use crate::traits::h_pythagorean_theorem;
 pub use crate::traits::h_reverse_pythagorean_theorem;
 pub use crate::traits::h_find_equal_legs_from_hypotenuse;
+pub use crate::traits::InputType;
+pub use crate::traits::Grid;
+pub use crate::traits::h_geometry_make_grid;
+pub use crate::traits::GridType;
+

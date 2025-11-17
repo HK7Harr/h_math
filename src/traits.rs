@@ -298,6 +298,34 @@ where
     (hfc / 2.0).sqrt()
 }
 
+// cli geometry interface
+pub enum GridType {
+    std, // -999, 999
+    small, // -100, 100
+    custom(i32, i32),
+}
+
+pub struct Construct {
+    name: String,
+    side_cords: Vec<(f64, f64)>,
+    side_lengths: Vec<f64>,
+    angles: Vec<f64>,
+    corner_names: Vec<String>, // can be empty and will be called numbers instead
+}
+
+impl Construct {
+    
+}
+
+pub struct Grid {
+    xy_cords: (i32, i32),
+    constructs: Vec<Ve<(f64, f64)>>
+}
+
+pub fn h_geometry_make_grid(grid_type: GridType) -> Grid {
+
+}
+
 
 
 // ------------------------------------ Core math ------------------------------------
