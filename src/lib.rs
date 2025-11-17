@@ -43,4 +43,7 @@ pub use traits::h_simple_eq_checker_x;
 pub use traits::ToVecf64;
 pub use traits::ToVeci32;
 pub use traits::ValidateInput;
+pub use traits::h_pythagorean_theorem;
+pub use traits::h_reverse_pythagorean_theorem;
+pub use traits::h_find_equal_legs_from_hypotenuse;
 
