@@ -1,7 +1,7 @@
 use core::panic;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
-use std::io;
+use std::{io};
 
 // -------------------------------- Statistics ---------------------------------
 
@@ -213,26 +213,44 @@ where
     }
 }
 
-pub fn h_arrange_vec<I>(start: I, stop: I, step: I) -> Vec<f64> 
-where 
+pub fn h_arrange_vec<I>(start: I, stop: I, step: I) -> Vec<f64>
+where
     I: Copy + Into<f64>,
 {
-    let mut vector: Vec<f64> = Vec::new();
-    let mut start_f: f64 = start.into();
-    if start_f > stop.into() && step.into() >= 0.0  {
+    let mut s = start.into();
+    let end = stop.into();
+    let step = step.into();
+
+   
+    if step == 0.0 {
         return vec![];
     }
-    if
-    vector.push(start_f);
-    while start_f >= stop.into() {
-        start_f += step.into();
-        if start_f > stop.into() {
-            return vector;
-        }
-        vector.push(start_f);
+
+
+    if (s < end && step < 0.0) || (s > end && step > 0.0) {
+        return vec![];
     }
-    return vector;
+
+    let mut v = Vec::new();
+
+    if step > 0.0 {
+   
+        while s <= end {
+            v.push(s);
+            s += step;
+        }
+    } else {
+        
+        while s >= end {
+            v.push(s);
+            s += step; 
+        }
+    }
+
+    v
 }
+
+
 
 // ------------------------------------ Geometry ------------------------------------
 
@@ -1006,6 +1024,7 @@ impl ValidateInput for String {
         Ok(())
     }
 }
+
 
 
 

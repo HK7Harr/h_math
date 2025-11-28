@@ -50,4 +50,5 @@ pub use traits::h_reverse_pythagorean_theorem;
 pub use traits::h_find_equal_legs_from_hypotenuse;
 pub use traits::InputType;
 pub use traits::ShortFromLongLeg30_60_90;
+pub use traits::h_arrange_vec;
 
