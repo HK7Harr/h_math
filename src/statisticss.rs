@@ -4,7 +4,7 @@ pub trait Average {
     fn h_average(&self) -> f64;
 }
 
-impl<T> Average for &[T]
+impl<T> Average for [T]
 where
     T: Copy + Into<f64>,
 {
@@ -22,7 +22,7 @@ pub trait Median {
     fn h_median(&self) -> f64;
 }
 
-impl<T> Median for &[T]
+impl<T> Median for [T]
 where
     T: Copy + Into<f64> + PartialOrd,
 {
@@ -77,7 +77,7 @@ pub trait Variance {
     fn h_variance(&self) -> f64;
 }
 
-impl<T> Variance for &[T]
+impl<T> Variance for [T]
 where
     T: Copy + Into<f64> + PartialOrd,
 {
@@ -98,7 +98,7 @@ pub trait ModusMult {
     fn h_modus_mult(&self) -> Vec<f64>;
 }
 
-impl<T> ModusMult for &[T]
+impl<T> ModusMult for [T]
 where
     T: Copy + Into<f64> + PartialEq,
 {
@@ -106,7 +106,7 @@ where
         let mut list_modus: Vec<(f64, i32)> = vec![];
         let mut found_list: Vec<f64> = vec![];
 
-        for &x in *self {
+        for &x in self {
             let val = x.into();
             if !found_list.contains(&val) {
                 found_list.push(val);
@@ -114,7 +114,7 @@ where
             }
         }
 
-        for &x in *self {
+        for &x in self {
             let val = x.into();
             for j in &mut list_modus {
                 if j.0 == val {

@@ -3,7 +3,17 @@ use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 
 
-
+/// This trait converts the values of a HashMap into a HashSet. The values must implement the Eq, Hash, 
+/// and Clone traits to be stored in a HashSet. The function will return a HashSet containing all the unique values 
+/// from the HashMap. For example, if the HashMap contains the pairs (1, "a"), (2, "b"), and (3, "a"), 
+/// the resulting HashSet will contain "a" and "b", because "a" is duplicated in the values of the HashMap.
+/// Example usage:
+/// let mut map = HashMap::new();
+/// map.insert(1, "a");
+/// map.insert(2, "b");
+/// map.insert(3, "a");
+/// let value_set = map.h_hashmap_values_to_hashset();
+/// The result will be a HashSet containing "a" and "b", because those are the unique values in the HashMap.
 pub trait HashMapValuesToHashSet<V>
 where
     V: Eq + Hash + Clone,
@@ -24,6 +34,19 @@ where
     }
 }
 
+
+/// This trait converts the keys of a HashMap into a HashSet. The keys must implement the Eq, Hash, 
+/// and Clone traits to be stored in a HashSet. The function will return a HashSet
+/// containing all the unique keys from the HashMap. For example, if the HashMap contains the pairs (1, "a"), (2, "b"), 
+/// and (3, "a"),
+/// the resulting HashSet will contain 1, 2, and 3, because those are the unique keys in the HashMap.
+/// Example usage:
+/// let mut map = HashMap::new();
+/// map.insert(1, "a");
+/// map.insert(2, "b");
+/// map.insert(3, "a");
+/// let key_set = map.h_hashmap_keys_to_hashset();
+/// The result will be a HashSet containing 1, 2, and 3, because those are the unique keys in the HashMap.
 pub trait HashMapKeysToHashSet<K>
 where
     K: Eq + Hash + Clone,
@@ -43,6 +66,20 @@ where
         set
     }
 }
+
+
+/// This trait converts a list of keys and a list of values into a HashMap. 
+/// The keys and values must implement the Eq, Hash, and Clone traits to be stored in a HashMap. 
+/// The function will return a HashMap where each key from the list of keys is associated with the corresponding value 
+/// from the list of values. For example, if the list of keys is [1, 2, 3] and the list of values is ["a", "b", "c"], 
+/// the resulting HashMap will contain the pairs (1, "a"), (2, "b"), and (3, "c"). The function will panic 
+/// if the lengths of the keys and values lists do not match, or if there are duplicate keys in the list of keys.
+/// Example usage:
+/// let keys = vec![1, 2, 3];
+/// let values = vec!["a", "b", "c"];
+/// let map = keys.h_list_to_hashmap(&values);
+/// The result will be a HashMap containing the pairs (1, "a"), (2, "b"), and (3, "c"),
+///  because each key from the list of keys is associated with the corresponding value from the list of values.
 
 pub trait ListToHashMap<V> {
     type Key;
@@ -89,18 +126,18 @@ where
     }
 }
 
-impl<K, V> ListToHashMap<V> for Vec<K>
-where
-    K: Eq + Hash + Clone,
-    V: Clone,
-{
-    type Key = K;
-    type Value = V;
 
-    fn h_list_to_hashmap(&self, values: &[V]) -> HashMap<Self::Key, Self::Value> {
-        self.as_slice().h_list_to_hashmap(values)
-    }
-}
+/// this trait converts a list of values into a HashSet. 
+/// The values must implement the Eq, Hash, and Clone traits to be stored in a HashSet.
+/// The function will return a HashSet containing all the unique values from the list. 
+/// For example, if the list contains ["a", "b", "a", "c"],
+/// the resulting HashSet will contain "a", "b", and "c", because those are the unique values in the list.
+/// Example usage:
+/// let values = vec!["a", "b", "a", "c"];
+/// let value_set = values.h_list_to_hashset();
+/// The result will be a HashSet containing "a", "b", and "c", because those are the unique values in the list.
+/// The function will panic if there are duplicate values in the list, as HashSet only stores unique values.
+/// For example, if the list contains ["a", "b", "a"], the function will panic with the message "Duplicate value found in h_list_to_hashset" because "a" is duplicated in the list of values.
 
 pub trait ListToHashSet {
     type Item;
@@ -125,16 +162,7 @@ where
     }
 }
 
-impl<T> ListToHashSet for Vec<T>
-where
-    T: Eq + Hash + Clone,
-{
-    type Item = T;
 
-    fn h_list_to_hashset(&self) -> HashSet<Self::Item> {
-        self.as_slice().h_list_to_hashset()
-    }
-}
 
 pub trait Tof64 {
     fn h_f64(&self) -> f64;
