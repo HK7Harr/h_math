@@ -1,10 +1,10 @@
 [package]
 name = "h_math"
-version = "0.2.5"
+version = "0.3.0"
 edition = "2024"
 authors = ["Henry Lier <henryaksellier@gmail.com>"]
 license = "MIT"
-description = "A Rust library for advanced mathematical computations."
+description = "A Rust library for simple and advanced mathematical computations."
 repository = "https://github.com/HK7Harr/h_math"
 
 
