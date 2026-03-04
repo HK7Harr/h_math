@@ -1,5 +1,4 @@
 use std::iter::zip;
-use crate::prelude;
 
 /// Hadamard product of two vectors. The vectors must have the same length.
 /// Formula: C = A ⊙ B, where C[i] = A[i] * B[i]
@@ -46,27 +45,29 @@ where
     return sum;
 }
 
-
 pub trait Magnitude {
     fn h_vector_magnitude(&self) -> f64;
 }
 
-impl<T> Magnitude for [T] 
-where 
+impl<T> Magnitude for [T; 2]
+where
     T: Copy + Into<f64>,
 {
     fn h_vector_magnitude(&self) -> f64 {
-        let mut hypot_or_length: f64 = 0.0;
-        let mut hyp_counter: usize = 1;
-        for _ in 2..=self.len() {
-            let mut short_sides: Vec<f64> = Vec::new();
+        let x: f64 = self[0].into();
+        let y: f64 = self[1].into();
+        (x*x + y*y).sqrt()
+    }
+}
 
-            for i in hyp_counter-1..=hyp_counter {
-                short_sides.push((self[i]).into())
-            }
-
-            hyp_counter += 1;
-        }
-        return 0.0;
+impl<T> Magnitude for [T; 3]
+where
+    T: Copy + Into<f64>,
+{
+    fn h_vector_magnitude(&self) -> f64 {
+        let x: f64 = self[0].into();
+        let y: f64 = self[1].into();
+        let z: f64 = self[2].into();
+        (x*x + y*y + z*z).sqrt()
     }
 }
