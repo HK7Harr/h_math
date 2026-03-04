@@ -45,29 +45,32 @@ where
     return sum;
 }
 
+
+/// Calculates the magnitude of a vector. The magnitude is the square root of the sum of the squares of the components.
+/// Formula: ||A|| = sqrt(A[0]^2 + A[1]^2 + ... + A[n]^2)
+/// Example:
+/// let vec = vec![3.0, 4.0];
+/// let result = vec.h_vector_magnitude();
+/// The result will be 5.0, because sqrt(3^2 + 4^2) = sqrt(9 + 16) = sqrt(25) = 5.
+/// If the vector were vec![1.0, 2.0, 2.0], the result would be 3.0, because sqrt(1^2 + 2^2 + 2^2) = sqrt(1 + 4 + 4) = sqrt(9) = 3.
+/// the reason for the formula is that that is the pythagorean theorem for n dimensions, 
+/// and since you can always make a right triangle with the vector as the hypotenuse, the magnitude is the length of the hypotenuse, which is the square root of the sum of the squares of the legs, which are the components of the vector.
+/// If the vector were vec![0.0, 0.0, 0.0], the result would be 0.0, because sqrt(0^2 + 0^2 + 0^2) = sqrt(0) = 0.
+/// it is implemented for n-dimensional space but i dont know why anyone would want to use it for more than 3 dimensions, but it is there if you need it.
+/// nut the feature is there if you need it.
 pub trait Magnitude {
     fn h_vector_magnitude(&self) -> f64;
 }
 
-impl<T> Magnitude for [T; 2]
-where
+impl<T> Magnitude for [T] 
+where 
     T: Copy + Into<f64>,
 {
     fn h_vector_magnitude(&self) -> f64 {
-        let x: f64 = self[0].into();
-        let y: f64 = self[1].into();
-        (x*x + y*y).sqrt()
-    }
-}
-
-impl<T> Magnitude for [T; 3]
-where
-    T: Copy + Into<f64>,
-{
-    fn h_vector_magnitude(&self) -> f64 {
-        let x: f64 = self[0].into();
-        let y: f64 = self[1].into();
-        let z: f64 = self[2].into();
-        (x*x + y*y + z*z).sqrt()
+        let sum_of_squares: f64 = self.iter().map(|x| {
+            let v: f64 = (*x).into();
+            v * v
+        }).sum();
+        sum_of_squares.sqrt()
     }
 }

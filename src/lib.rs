@@ -5,11 +5,11 @@
 /// The naming conventions for traits and functions are h_ followed by what the trait and function does.
 /// 
 /// # Examples
-/// h_average, h_median, h_haramond_product, h_factorial, h_sphere_volume ect.
+/// h_mean, h_median, h_factorial, h_sphere_volume, etc.
 /// 
 /// use h_math::prelude::*; for the best experience, as it will import all the traits and functions into scope.
 /// and since the traits are implemented for primitive types, you can call the functions directly on the values.
-/// also, since the functions and traits always hav h_xxxxxx you won't have to worry about naming conflicts with other libraries.
+/// also, since the functions and traits always have h_xxxxxx you won't have to worry about naming conflicts with other libraries.
 /// 
 /// Please refer to the documentation for each module for more details on the available functions and how to use them.
 ///
@@ -23,7 +23,7 @@
 /// - **Formula**: n! = n × (n-1) × (n-2) × ... × 1
 /// - **Panics**: If given a negative number
 ///
-/// ## Root Degree Trait (`RootDegree`)
+/// ## RootDegree Trait (`RootDegree`)
 /// - **Function**: `h_root_degree(degree: u32)`
 /// - **Input**: Self (numeric type), degree (u32)
 /// - **Output**: `f64`
@@ -281,17 +281,17 @@
 ///
 /// ## RectangularPrismVolume Trait
 /// - **Function**: `h_rectangular_prism_volume(height: H)`
-/// - **Input**: Length/width and height of rectangular prism
+/// - **Input**: Side length and height of rectangular prism (assumes square cross-section)
 /// - **Output**: `f64`
 /// - **Purpose**: Calculates the volume of a rectangular prism
-/// - **Formula**: V = l × w × h
+/// - **Formula**: V = l × w × h (where w = l)
 ///
 /// ## RectangularPrismSurfaceArea Trait
 /// - **Function**: `h_rectangular_prism_surface_area(height: H)`
-/// - **Input**: Length/width and height of rectangular prism
+/// - **Input**: Side length and height of rectangular prism (assumes square cross-section)
 /// - **Output**: `f64`
 /// - **Purpose**: Calculates the surface area of a rectangular prism
-/// - **Formula**: A = 2(lw + lh + wh)
+/// - **Formula**: A = 2(lw + lh + wh) (where w = l)
 ///
 /// ## PyramidVolume Trait
 /// - **Function**: `h_pyramid_volume(height: H)`
@@ -330,6 +330,20 @@
 /// - **Purpose**: Calculates the price after a percentage increase
 /// - **Formula**: new_price = original × (1 + percentage/100)
 ///
+/// ## IncreasePercentFromOriginal Trait
+/// - **Function**: `h_increase_percent_from_original(new_value: f64)`
+/// - **Input**: Original value, new value
+/// - **Output**: `f64` (percentage increase)
+/// - **Purpose**: Calculates the percentage increase from original to new value
+/// - **Formula**: ((new_value - original) / original) × 100
+///
+/// ## DecreasePercentFromOriginal Trait
+/// - **Function**: `h_decrease_percent_from_original(new_value: f64)`
+/// - **Input**: Original value, new value
+/// - **Output**: `f64` (percentage decrease)
+/// - **Purpose**: Calculates the percentage decrease from original to new value
+/// - **Formula**: ((original - new_value) / original) × 100
+///
 /// # Probability Functions
 ///
 /// ## h_permutations Function
@@ -348,8 +362,8 @@
 ///
 /// # Statistics Functions
 ///
-/// ## Average Trait
-/// - **Function**: `h_average()`
+/// ## Mean Trait
+/// - **Function**: `h_mean()`
 /// - **Input**: Slice of numeric values `&[T]`
 /// - **Output**: `f64`
 /// - **Purpose**: Calculates the arithmetic mean of a set of numbers
@@ -363,18 +377,20 @@
 /// - **Behavior**: For even-length sets, returns the average of two middle values
 /// - **Returns 0.0**: If slice is empty
 ///
-/// ## Sum Trait
-/// - **Function**: `h_sum()`
-/// - **Input**: Slice or Vec of numeric values
-/// - **Output**: `f64`
-/// - **Purpose**: Calculates the sum of all elements
-///
-/// ## Variance Trait
-/// - **Function**: `h_variance()`
+/// ## PopulationVariance Trait
+/// - **Function**: `h_population_variance()`
 /// - **Input**: Slice of numeric values `&[T]`
 /// - **Output**: `f64`
-/// - **Purpose**: Calculates the variance (range) between max and min values
-/// - **Formula**: max - min
+/// - **Purpose**: Calculates the population variance
+/// - **Formula**: Variance = Σ((x_i - mean)²) / n
+/// - **Returns 0.0**: If less than 2 elements
+///
+/// ## SampleVariance Trait
+/// - **Function**: `h_sample_variance()`
+/// - **Input**: Slice of numeric values `&[T]`
+/// - **Output**: `f64`
+/// - **Purpose**: Calculates the sample variance
+/// - **Formula**: Variance = Σ((x_i - mean)²) / (n - 1)
 /// - **Returns 0.0**: If less than 2 elements
 ///
 /// ## ModusMult Trait
@@ -383,6 +399,20 @@
 /// - **Output**: `Vec<f64>` (all modes)
 /// - **Purpose**: Finds all values that appear most frequently
 /// - **Returns empty**: If no value appears more than once
+///
+/// ## StdDevPopulation Trait
+/// - **Function**: `h_std_dev_population()`
+/// - **Input**: Slice of numeric values `&[T]`
+/// - **Output**: `f64`
+/// - **Purpose**: Calculates the population standard deviation
+/// - **Formula**: sqrt(population variance)
+///
+/// ## StdDevSample Trait
+/// - **Function**: `h_std_dev_sample()`
+/// - **Input**: Slice of numeric values `&[T]`
+/// - **Output**: `f64`
+/// - **Purpose**: Calculates the sample standard deviation
+/// - **Formula**: sqrt(sample variance)
 ///
 /// # Linear Algebra Functions
 ///
@@ -400,6 +430,13 @@
 /// - **Purpose**: Calculates the dot product of two vectors
 /// - **Formula**: vec1 · vec2 = Σ(a_i × b_i)
 /// - **Panics**: If vectors have different lengths
+///
+/// ## Magnitude Trait
+/// - **Function**: `h_vector_magnitude()`
+/// - **Input**: Slice of numeric values `&[T]`
+/// - **Output**: `f64`
+/// - **Purpose**: Calculates the magnitude (length) of a vector
+/// - **Formula**: ||v|| = sqrt(Σ(v_i²))
 ///
 /// # Collection/Functionality Traits
 ///
@@ -497,7 +534,7 @@
 ///   - `Integer`: Only digits 0-9 allowed (must be parseable as i32)
 /// - **Returns Error**: If input is empty or contains invalid characters
 ///
-///
+/// ## Disclaimer: This DOCUMENTATION is generated by AI, because i am too lazy to write all of these descriptions, i just like coding, so it might contain some inaccuracies.
 
 
 

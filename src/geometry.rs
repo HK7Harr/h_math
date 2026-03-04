@@ -13,6 +13,7 @@ where
     }
 }
 
+
 pub trait CircleArea {
     fn h_circle_area(&self) -> f64;
 }
@@ -27,6 +28,14 @@ where
     }
 }
 
+/// Calculates the length of the hypotenuse of a right triangle given the lengths of the two legs.
+/// The formula is derived from the Pythagorean theorem: c^2 = a^2 + b^2, where c is the hypotenuse and a and b are the legs.
+/// Rearranging the formula gives: c = √(a^2 + b^2).
+/// Example usage:
+/// let leg1 = 3.0;
+/// let leg2 = 4.0;
+/// let hypotenuse = h_pythagorean_theorem(leg1, leg2);
+/// The result will be 5.0, because the hypotenuse is calculated as √(3^2 + 4^2) = √(9 + 16) = √25 = 5.
 pub fn h_pythagorean_theorem<A, B>(a: A, b: B) -> f64
 where
     A: Copy + Into<f64>,
@@ -37,6 +46,13 @@ where
     (a_f.powf(2.0) + b_f.powf(2.0)).sqrt()
 }
 
+/// Calculates the length of the other leg of a right triangle given the length of one leg and the hypotenuse.
+/// The formula is derived from the Pythagorean theorem: c^2 = a^2 + b^2, where c is the hypotenuse and a and b are the legs.
+/// Rearranging the formula gives: a^2 = c^2 - b^2, and taking the square root gives: a = √(c^2 - b^2).
+/// Example usage:
+/// let leg = 3.0;
+/// let hypotenuse = 5.0;
+/// let other_leg = h_reverse_pythagorean_theorem(leg, hypotenuse);
 pub fn h_reverse_pythagorean_theorem<K, H>(x: K, h: H) -> f64
 where 
     K: Copy + Into<f64>,
@@ -47,6 +63,13 @@ where
     (hfc - xfc).powf(0.5)
 }
 
+/// Calculates the length of the legs of an isosceles right triangle given the length of the hypotenuse.
+/// In an isosceles right triangle, the legs are of equal length and the hyp
+/// is opposite the right angle. The formula to calculate the leg length from the hypotenuse is: leg = hypotenuse / √2.
+/// Example usage:
+/// let hypotenuse = 5.0;
+/// let leg_length = h_find_equal_legs_from_hypotenuse(hypotenuse);
+/// The result will be approximately 3.5355339059327378, because the leg length is calculated as 5.0 / √2, which is approximately 3.5355339059327378.
 pub fn h_find_equal_legs_from_hypotenuse<H>(h: H) -> f64 
 where 
     H: Copy + Into<f64>,
@@ -55,6 +78,14 @@ where
     (hfc / 2.0).sqrt()
 }
 
+/// Calculates the length of the short leg of a 30-60-90 triangle given the length of the long leg.
+/// In a 30-60-90 triangle, the ratio of the sides is 1 : √3 : 2, where the short leg is opposite the 30° angle, the long leg is opposite the 60° angle, and the hypotenuse is opposite the 90° angle.
+/// The formula to calculate the short leg from the long leg is: short_leg = long_leg / √3.
+/// Example usage:
+/// let long_leg = 5.0;
+/// let short_leg = long_leg.h_short_from_long_leg_30_60_90();
+/// The result will be approximately 2.886751345948129, because the short leg
+/// is calculated as 5.0 / √3, which is approximately 2.886751345948129.
 pub trait ShortFromLongLeg30_60_90{
     fn h_short_from_long_leg_30_60_90(&self) -> f64;
 }

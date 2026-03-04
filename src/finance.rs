@@ -63,3 +63,58 @@ where
         percent_increas_plus_one * (*self).into()
     }
 }
+
+
+
+/// this trait calculates the percentage increase from an original value to a new value.
+/// The percentage increase is calculated as ((new_value - original_value) / original_value) * 100, 
+/// where original_value is the initial value before the increase. 
+/// The function will return the percentage increase as a positive value. For example, 
+/// if the original value is 100 and the new value is 150, the percentage increase would be 
+/// ((150 - 100) / 100) * 100 = 50%, indicating a 50% increase from the original value.
+/// Example usage:
+/// let original_value = 100.0;
+/// let new_value = 150.0;
+/// 
+/// let percent_increase = original_value.h_increase_percent_from_original(new_value);
+/// The result will be 50.0, because the percentage increase is ((150 -
+pub trait IncreasePercentFromOriginal {
+    fn h_increase_percent_from_original(&self, new_value: f64) -> f64;
+}
+
+impl<T> IncreasePercentFromOriginal for T
+where
+    T: Copy + Into<f64>,
+{
+    fn h_increase_percent_from_original(&self, new_value: f64) -> f64 {
+        let original_value = (*self).into();
+        ((new_value - original_value) / original_value) * 100.0
+    }
+}
+
+
+/// This trait calculates the percentage decrease from an original value to a new value.
+/// The percentage decrease is calculated as ((original_value - new_value) / original_value) * 100,
+///  where original_value is the initial value before the decrease.
+/// The function will return the percentage decrease as a positive value.
+///  For example, if the original value is 100 and the new value is 80, the percentage decrease would be 
+/// ((100 - 80) / 100) * 100 = 20%, indicating a 20% decrease from the original value.
+/// Example usage:
+/// let original_value = 100.0;
+/// let new_value = 80.0;
+/// let percent_decrease = original_value.h_decrease_percent_from_original(new_value);
+/// The result will be 20.0, because the percentage decrease is ((100 - 80) / 100) * 100 = 20%.
+pub trait DecreasePercentFromOriginal {
+    fn h_decrease_percent_from_original(&self, new_value: f64) -> f64;
+}
+    
+impl<T> DecreasePercentFromOriginal for T
+where
+    T: Copy + Into<f64>,
+{
+    fn h_decrease_percent_from_original(&self, new_value: f64) -> f64 {
+        let original_value = (*self).into();
+        ((original_value - new_value) / original_value) * 100.0
+    }
+}
+

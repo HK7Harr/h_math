@@ -1,6 +1,6 @@
 [package]
 name = "h_math"
-version = "1.0.1"
+version = "1.2.0"
 edition = "2024"
 authors = ["Henry Lier <henryaksellier@gmail.com>"]
 license = "MIT"
