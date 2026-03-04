@@ -8,7 +8,8 @@ A comprehensive math library for Rust, providing a wide range of mathematical fu
 - **Generic Traits**: Implemented for primitive types, allowing direct method calls on values
 - **No Naming Conflicts**: The `h_` prefix ensures compatibility with other libraries
 - **Comprehensive Coverage**: Core math, algebra, geometry, statistics, finance, and more
-
+- **Lightweight, but capable**: This library has many simple and some more complicated function, but they are more lightweight and broad compared to other math libraries like nalgebra and ndarray, which are sturdier but less casual to use
+- **One for all**: Though this library is relatively small for now, it does have great variety and i plan on on developing it for better coverage and more features
 ## Getting Started
 
 ```rust
