@@ -5,7 +5,7 @@ edition = "2024"
 authors = ["Henry Lier <henryaksellier@gmail.com>"]
 license = "MIT"
 categories = ["math", "science", "statistics"]
-keywords = ["math", "mathematics", "statistics", "linear algebra", "geometry"]
+keywords = ["math", "mathematics", "statistics", "linear-algebra", "geometry"]
 description = "A Rust library for simple and advanced mathematical computations."
 repository = "https://github.com/HK7Harr/h_math"
 
