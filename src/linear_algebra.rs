@@ -74,3 +74,70 @@ where
         sum_of_squares.sqrt()
     }
 }
+
+
+
+
+pub fn h_vector_add<T, I>(vec1: &[T], vec2: &[I]) -> Vec<f64>
+where
+    T: Copy + Into<f64>,
+    I: Copy + Into<f64>,
+{
+    if vec1.len() != vec2.len() {
+        panic!("from: h_vector_add, the vectors do not have the same length");
+    }
+
+    zip(vec1, vec2)
+        .map(|(a, b)| (*a).into() + (*b).into())
+        .collect()
+}
+
+pub fn h_vector_sub<T, I>(vec1: &[T], vec2: &[I]) -> Vec<f64>
+where
+    T: Copy + Into<f64>,
+    I: Copy + Into<f64>,
+{
+    if vec1.len() != vec2.len() {
+        panic!("from: h_vector_sub, the vectors do not have the same length");
+    }
+
+    zip(vec1, vec2)
+        .map(|(a, b)| (*a).into() - (*b).into())
+        .collect()
+}
+
+pub trait VectorScalarMultiply<S> 
+where 
+    S: Copy + Into<f64>,
+{
+    fn h_vector_scalar_mult(&self, scalar: S) -> Vec<f64>;
+}
+
+impl<S, T> VectorScalarMultiply<S> for [T]
+where 
+    S: Copy + Into<f64>,
+    T: Copy + Into<f64>,
+{
+    fn h_vector_scalar_mult(&self, scalar: S) -> Vec<f64> {
+        self.iter().map(|x| (*x).into() * scalar.into()).collect()
+    }
+}
+
+
+
+pub trait VectorScalarDivision<S> 
+where 
+    S: Copy + Into<f64>,
+{
+    fn h_vector_scalar_div(&self, scalar: S) -> Vec<f64>;
+}
+
+impl<S, T> VectorScalarDivision<S> for [T]
+where 
+    S: Copy + Into<f64>,
+    T: Copy + Into<f64>,
+{
+    fn h_vector_scalar_div(&self, scalar: S) -> Vec<f64> {
+        self.iter().map(|x| (*x).into() / scalar.into()).collect()
+    }
+}
