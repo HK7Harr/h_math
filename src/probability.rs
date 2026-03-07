@@ -9,11 +9,11 @@ use crate::prelude::*;
 /// The result will be 20, because there are 20 ways to arrange 2 items from a total of 5 items (AB, AC, AD, AE, BA, BC, BD, BE, CA, CB, CD, CE, DA, DB, DC, DE, EA, EB, EC, ED).
 pub fn h_permutations<T, S>(total: &T, select: &S) -> u64 
 where   
-    T: Copy + Into<u32>,
-    S: Copy + Into<u32>,
+    T: Copy + Into<u64>,
+    S: Copy + Into<u64>,
 {
-    let n: u32 = (*total).into();
-    let r: u32 = (*select).into();
+    let n: u64 = (*total).into();
+    let r: u64 = (*select).into();
     
     return n.h_factorial() / (n - r).h_factorial();
 }
@@ -30,13 +30,30 @@ where
 
 pub fn h_combinations<T, S>(total: &T, select: &S) -> u64 
 where   
-    T: Copy + Into<u32>,
-    S: Copy + Into<u32>,
+    T: Copy + Into<u64>,
+    S: Copy + Into<u64>,
 {
-    let n: u32 = (*total).into();
-    let r: u32 = (*select).into();
+    let n: u64 = (*total).into();
+    let r: u64 = (*select).into();
     
     return n.h_factorial() / (r.h_factorial() * (n - r).h_factorial());
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_h_permutations() {
+        assert_eq!(h_permutations(&5u32, &2u64), 20);
+        assert_eq!(h_permutations(&4u64, &2u32), 12);
+    }
+
+    #[test]
+    fn test_h_combinations() {
+        assert_eq!(h_combinations(&5u32, &2u32), 10);
+        assert_eq!(h_combinations(&4u64, &2u64), 6);
+    }
 }
 
 

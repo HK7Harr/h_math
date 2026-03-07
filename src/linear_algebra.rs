@@ -141,3 +141,60 @@ where
         self.iter().map(|x| (*x).into() / scalar.into()).collect()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_h_hadamard_product() {
+        let vec1 = vec![1.0, 2.0, 3.0];
+        let vec2 = vec![4.0, 5.0, 6.0];
+        let result = h_hadamard_product(&vec1, &vec2);
+        assert_eq!(result, vec![4.0, 10.0, 18.0]);
+    }
+
+    #[test]
+    fn test_h_2d_dot_product() {
+        let vec1 = vec![1.0, 2.0, 3.0];
+        let vec2 = vec![4.0, 5.0, 6.0];
+        let result = h_2d_dot_product(&vec1, &vec2);
+        assert_eq!(result, 32.0);
+    }
+
+    #[test]
+    fn test_vector_magnitude() {
+        let vec = vec![3.0, 4.0];
+        assert_eq!(vec.h_vector_magnitude(), 5.0);
+    }
+
+    #[test]
+    fn test_h_vector_add() {
+        let vec1 = vec![1.0, 2.0, 3.0];
+        let vec2 = vec![4.0, 5.0, 6.0];
+        let result = h_vector_add(&vec1, &vec2);
+        assert_eq!(result, vec![5.0, 7.0, 9.0]);
+    }
+
+    #[test]
+    fn test_h_vector_sub() {
+        let vec1 = vec![5.0, 7.0, 9.0];
+        let vec2 = vec![1.0, 2.0, 3.0];
+        let result = h_vector_sub(&vec1, &vec2);
+        assert_eq!(result, vec![4.0, 5.0, 6.0]);
+    }
+
+    #[test]
+    fn test_vector_scalar_mult() {
+        let vec = vec![1.0, 2.0, 3.0];
+        let result = vec.h_vector_scalar_mult(2.0);
+        assert_eq!(result, vec![2.0, 4.0, 6.0]);
+    }
+
+    #[test]
+    fn test_vector_scalar_div() {
+        let vec = vec![4.0, 6.0, 8.0];
+        let result = vec.h_vector_scalar_div(2.0);
+        assert_eq!(result, vec![2.0, 3.0, 4.0]);
+    }
+}

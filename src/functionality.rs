@@ -1,6 +1,12 @@
-use core::panic;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
+
+
+#[derive(Debug)]
+pub enum ListToHashMapError<K> {
+    LengthMismatch { keys_len: usize, values_len: usize },
+    DuplicateKeys { duplicates: Vec<K> },
+}
 
 
 /// This trait converts the values of a HashMap into a HashSet. The values must implement the Eq, Hash, 
@@ -68,81 +74,69 @@ where
 }
 
 
-/// This trait converts a list of keys and a list of values into a HashMap. 
-/// The keys and values must implement the Eq, Hash, and Clone traits to be stored in a HashMap. 
-/// The function will return a HashMap where each key from the list of keys is associated with the corresponding value 
-/// from the list of values. For example, if the list of keys is [1, 2, 3] and the list of values is ["a", "b", "c"], 
-/// the resulting HashMap will contain the pairs (1, "a"), (2, "b"), and (3, "c"). The function will panic 
-/// if the lengths of the keys and values lists do not match, or if there are duplicate keys in the list of keys.
+/// This function converts a list of keys and a list of values into a HashMap.
+/// The keys and values must implement the Eq, Hash, and Clone traits to be stored in a HashMap.
+/// The function will return a Result containing a HashMap where each key from the list of keys is associated with the corresponding value
+/// from the list of values, or a vector of errors if issues are found (length mismatch or duplicate keys).
+/// For example, if the list of keys is [1, 2, 3] and the list of values is ["a", "b", "c"],
+/// the resulting HashMap will contain the pairs (1, "a"), (2, "b"), and (3, "c").
+/// If lengths don't match or there are duplicate keys, it returns errors.
 /// Example usage:
 /// let keys = vec![1, 2, 3];
 /// let values = vec!["a", "b", "c"];
-/// let map = keys.h_list_to_hashmap(&values);
-/// The result will be a HashMap containing the pairs (1, "a"), (2, "b"), and (3, "c"),
-///  because each key from the list of keys is associated with the corresponding value from the list of values.
+/// let map = h_list_to_hashmap(&keys, &values);
+/// The result will be Ok(HashMap) containing the pairs (1, "a"), (2, "b"), and (3, "c").
 
-pub trait ListToHashMap<V> {
-    type Key;
-    type Value;
-
-    fn h_list_to_hashmap(&self, values: &[V]) -> HashMap<Self::Key, Self::Value>
-    where
-        Self::Key: Eq + Hash + Clone,
-        Self::Value: Clone;
-}
-
-
-impl<K, V> ListToHashMap<V> for [K]
+pub fn h_list_to_hashmap<K, V>(keys: &[K], values: &[V]) -> Result<HashMap<K, V>, Vec<ListToHashMapError<K>>>
 where
     K: Eq + Hash + Clone,
     V: Clone,
 {
-    type Key = K;
-    type Value = V;
-
-    fn h_list_to_hashmap(&self, values: &[V]) -> HashMap<Self::Key, Self::Value> {
-        let keys: &[K] = self;
-
-        if keys.len() != values.len() {
-            panic!("Keys and values must have the same length");
-        }
-
-        let mut set = HashSet::new();
-        let mut map = HashMap::new();
-
-        // Check for duplicate keys
-        for key in keys.iter() {
-            if !set.insert(key.clone()) {
-                panic!("Duplicate key found in h_vector_to_hashmap");
-            }
-        }
-
-        // Build the HashMap
-        for i in 0..keys.len() {
-            map.insert(keys[i].clone(), values[i].clone());
-        }
-
-        map
+    if keys.len() != values.len() {
+        return Err(vec![ListToHashMapError::LengthMismatch {
+            keys_len: keys.len(),
+            values_len: values.len(),
+        }]);
     }
+
+    let mut map = HashMap::new();
+    let mut duplicates = Vec::new();
+
+    for (key, value) in keys.iter().zip(values.iter()) {
+        if map.contains_key(key) {
+            duplicates.push(key.clone());
+        } else {
+            map.insert(key.clone(), value.clone());
+        }
+    }
+
+    if !duplicates.is_empty() {
+        return Err(vec![ListToHashMapError::DuplicateKeys {
+            duplicates,
+        }]);
+    }
+
+    Ok(map)
 }
+
+
+
 
 
 /// this trait converts a list of values into a HashSet. 
 /// The values must implement the Eq, Hash, and Clone traits to be stored in a HashSet.
-/// The function will return a HashSet containing all the unique values from the list. 
+/// The function will return a tuple of (HashSet containing all the unique values from the list, number of duplicates removed). 
 /// For example, if the list contains ["a", "b", "a", "c"],
-/// the resulting HashSet will contain "a", "b", and "c", because those are the unique values in the list.
+/// the result will be (HashSet containing "a", "b", "c", 1), because "a" was duplicated.
 /// Example usage:
 /// let values = vec!["a", "b", "a", "c"];
-/// let value_set = values.h_list_to_hashset();
-/// The result will be a HashSet containing "a", "b", and "c", because those are the unique values in the list.
-/// The function will panic if there are duplicate values in the list, as HashSet only stores unique values.
-/// For example, if the list contains ["a", "b", "a"], the function will panic with the message "Duplicate value found in h_list_to_hashset" because "a" is duplicated in the list of values.
+/// let (value_set, dupes) = values.h_list_to_hashset();
+/// value_set will contain "a", "b", "c", and dupes will be 1.
 
 pub trait ListToHashSet {
     type Item;
 
-    fn h_list_to_hashset(&self) -> HashSet<Self::Item>
+    fn h_list_to_hashset(&self) -> (HashSet<Self::Item>, usize)
     where
         Self::Item: Eq + Hash + Clone;
 }
@@ -153,73 +147,83 @@ where
 {
     type Item = T;
 
-    fn h_list_to_hashset(&self) -> HashSet<Self::Item> {
+    fn h_list_to_hashset(&self) -> (HashSet<Self::Item>, usize) {  
         let mut set = HashSet::new();
+        let mut duplicates = 0;
         for item in self.iter() {
-            set.insert(item.clone());
+            if !set.insert(item.clone()) {
+                duplicates += 1;
+            }
         }
-        set
+        (set, duplicates)
     }
 }
 
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::HashMap;
 
-pub trait Tof64 {
-    fn h_f64(&self) -> f64;
-}
-
-impl<T> Tof64 for T 
-where 
-    T: Copy + Into<f64>,
-{
-    fn h_f64(&self) -> f64 {
-        (*self).into()
+    #[test]
+    fn test_hashmap_values_to_hashset() {
+        let mut map = HashMap::new();
+        map.insert(1, "a");
+        map.insert(2, "b");
+        map.insert(3, "a");
+        let set = map.h_hashmap_values_to_hashset();
+        assert_eq!(set.len(), 2);
+        assert!(set.contains("a"));
+        assert!(set.contains("b"));
     }
-}
 
-pub trait Toi32 {
-    fn h_i32(&self) -> i32;
-}
-
-impl<T> Toi32 for T 
-where 
-    T: Copy + Into<i32>,
-{
-    fn h_i32(&self) -> i32 {
-        (*self).into()
+    #[test]
+    fn test_hashmap_keys_to_hashset() {
+        let mut map = HashMap::new();
+        map.insert(1, "a");
+        map.insert(2, "b");
+        map.insert(3, "a");
+        let set = map.h_hashmap_keys_to_hashset();
+        assert_eq!(set.len(), 3);
+        assert!(set.contains(&1));
+        assert!(set.contains(&2));
+        assert!(set.contains(&3));
     }
-}
 
-pub trait ToVecf64 {
-    fn h_to_vec_f64(&self) -> Vec<f64>;
-}
-
-impl<T> ToVecf64 for Vec<T> 
-where 
-    T: Copy + Into<f64>,
-{
-    fn h_to_vec_f64(&self) -> Vec<f64> {
-        let mut new_vec: Vec<f64> = Vec::new();
-        for i in self {
-            new_vec.push((*i).into());
-        }
-        return new_vec;
+    #[test]
+    fn test_h_list_to_hashmap() {
+        let keys = vec![1, 2, 3];
+        let values = vec!["a", "b", "c"];
+        let map = h_list_to_hashmap(&keys, &values).unwrap();
+        assert_eq!(map.get(&1), Some(&"a"));
+        assert_eq!(map.get(&2), Some(&"b"));
+        assert_eq!(map.get(&3), Some(&"c"));
     }
-}
 
-pub trait ToVeci32 {
-    fn h_to_vec_i32(&self) -> Vec<i32>;
-}
+    #[test]
+    fn test_h_list_to_hashmap_length_mismatch() {
+        let keys = vec![1, 2];
+        let values = vec!["a", "b", "c"];
+        let result = h_list_to_hashmap(&keys, &values);
+        assert!(result.is_err());
+    }
 
-impl<T> ToVeci32 for Vec<T> 
-where 
-    T: Copy + Into<i32>,
-{
-    fn h_to_vec_i32(&self) -> Vec<i32> {
-        let mut new_vec: Vec<i32> = Vec::new();
-        for i in self {
-            new_vec.push((*i).into());
-        }
-        return new_vec;
+    #[test]
+    fn test_h_list_to_hashmap_duplicate_keys() {
+        let keys = vec![1, 1, 2];
+        let values = vec!["a", "b", "c"];
+        let result = h_list_to_hashmap(&keys, &values);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_list_to_hashset() {
+        let list = vec!["a", "b", "a", "c"];
+        let (set, dupes) = list.h_list_to_hashset();
+        assert_eq!(set.len(), 3);
+        assert!(set.contains("a"));
+        assert!(set.contains("b"));
+        assert!(set.contains("c"));
+        assert_eq!(dupes, 1);
     }
 }

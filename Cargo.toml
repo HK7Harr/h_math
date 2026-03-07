@@ -1,6 +1,6 @@
 [package]
 name = "h_math"
-version = "1.2.1"
+version = "1.3.0"
 edition = "2024"
 authors = ["Henry Lier <henryaksellier@gmail.com>"]
 license = "MIT"
@@ -11,4 +11,5 @@ repository = "https://github.com/HK7Harr/h_math"
 
 
 [dependencies]
+
 

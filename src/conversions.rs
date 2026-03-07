@@ -208,3 +208,100 @@ where
         (*self).into() * 10.0
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_celsius_to_fahrenheit() {
+        assert_eq!(0.0.h_celsius_to_fahrenheit(), 32.0);
+        assert_eq!(100.0.h_celsius_to_fahrenheit(), 212.0);
+    }
+
+    #[test]
+    fn test_fahrenheit_to_celsius() {
+        assert_eq!(32.0.h_fahrenheit_to_celsius(), 0.0);
+        assert_eq!(212.0.h_fahrenheit_to_celsius(), 100.0);
+    }
+
+    #[test]
+    fn test_celsius_to_kelvin() {
+        assert_eq!(0.0.h_celsius_to_kelvin(), 273.15);
+    }
+
+    #[test]
+    fn test_kelvin_to_celsius() {
+        assert_eq!(273.15.h_kelvin_to_celsius(), 0.0);
+    }
+
+    #[test]
+    fn test_fahrenheit_to_kelvin() {
+        assert!((32.0.h_fahrenheit_to_kelvin() - 273.15).abs() < 0.01);
+    }
+
+    #[test]
+    fn test_kelvin_to_fahrenheit() {
+        assert!((273.15.h_kelvin_to_fahrenheit() - 32.0).abs() < 0.01);
+    }
+
+    #[test]
+    fn test_meters_to_kilometers() {
+        assert_eq!(1000.0.h_meters_to_kilometers(), 1.0);
+    }
+
+    #[test]
+    fn test_kilometers_to_meters() {
+        assert_eq!(1.0.h_kilometers_to_meters(), 1000.0);
+    }
+
+    #[test]
+    fn test_centimeters_to_meters() {
+        assert_eq!(100.0.h_centimeters_to_meters(), 1.0);
+    }
+
+    #[test]
+    fn test_meters_to_centimeters() {
+        assert_eq!(1.0.h_meters_to_centimeters(), 100.0);
+    }
+
+    #[test]
+    fn test_centimeters_to_millimeters() {
+        assert_eq!(1.0.h_centimeters_to_millimeters(), 10.0);
+    }
+
+    #[test]
+    fn test_millimeters_to_centimeters() {
+        assert_eq!(10.0.h_millimeters_to_centimeters(), 1.0);
+    }
+
+    #[test]
+    fn test_kilometers_to_miles() {
+        assert!((1.0.h_kilometers_to_miles() - 0.621371).abs() < 0.0001);
+    }
+
+    #[test]
+    fn test_miles_to_kilometers() {
+        assert!((1.0.h_miles_to_kilometers() - 1.60934).abs() < 0.0001);
+    }
+
+    #[test]
+    fn test_inches_to_centimeters() {
+        assert_eq!(1.0.h_inches_to_centimeters(), 2.54);
+    }
+
+    #[test]
+    fn test_centimeters_to_inches() {
+        assert_eq!(2.54.h_centimeters_to_inches(), 1.0);
+    }
+
+    #[test]
+    fn test_centimeters_to_decimeters() {
+        assert_eq!(10.0.h_centimeters_to_decimeters(), 1.0);
+    }
+
+    #[test]
+    fn test_decimeters_to_centimeters() {
+        assert_eq!(1.0.h_decimeters_to_centimeters(), 10.0);
+    }
+}

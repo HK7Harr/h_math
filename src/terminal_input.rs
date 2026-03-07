@@ -62,6 +62,17 @@ pub enum InputType {
     Integer,
 }
 
+/// Validates a string input based on the specified requirements.
+/// The trait checks if the input string meets the criteria defined by the InputType enum.
+/// Returns Ok(()) if valid, or Err with a descriptive message if invalid.
+/// Supported types: Lowercase, Uppercase, Letters (both cases), Integer.
+/// Example usage:
+/// let input = "hello".to_string();
+/// let result = input.h_validate_input(InputType::Lowercase);
+/// // Returns Ok(()) since "hello" is all lowercase.
+/// let input = "Hello".to_string();
+/// let result = input.h_validate_input(InputType::Lowercase);
+/// // Returns Err with message about uppercase characters found.
 pub trait ValidateInput {
     fn h_validate_input(&self, input_requirements: InputType) -> Result<(), String>;
 }
@@ -97,7 +108,7 @@ impl ValidateInput for String {
             }
         }
         else if input_requirements == InputType::Letters {
-            if !self.chars().all(|c: char| c.is_ascii_uppercase() || c.is_ascii_uppercase()) {
+            if !self.chars().all(|c: char| c.is_ascii_uppercase() || c.is_ascii_lowercase()) {
                 let characters: HashSet<char> = ('A'..='Z').chain('a'..='z').collect();
                 let mut unexcpected: Vec<char> = vec![];
                 for c in self.chars() {
@@ -123,5 +134,64 @@ impl ValidateInput for String {
         }
 
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_validate_input_lowercase_valid() {
+        let input = "hello".to_string();
+        assert!(input.h_validate_input(InputType::Lowercase).is_ok());
+    }
+
+    #[test]
+    fn test_validate_input_lowercase_invalid() {
+        let input = "Hello".to_string();
+        assert!(input.h_validate_input(InputType::Lowercase).is_err());
+    }
+
+    #[test]
+    fn test_validate_input_uppercase_valid() {
+        let input = "HELLO".to_string();
+        assert!(input.h_validate_input(InputType::Uppercase).is_ok());
+    }
+
+    #[test]
+    fn test_validate_input_uppercase_invalid() {
+        let input = "Hello".to_string();
+        assert!(input.h_validate_input(InputType::Uppercase).is_err());
+    }
+
+    #[test]
+    fn test_validate_input_letters_valid() {
+        let input = "HelloWorld".to_string();
+        assert!(input.h_validate_input(InputType::Letters).is_ok());
+    }
+
+    #[test]
+    fn test_validate_input_letters_invalid() {
+        let input = "Hello123".to_string();
+        assert!(input.h_validate_input(InputType::Letters).is_err());
+    }
+
+    #[test]
+    fn test_validate_input_integer_valid() {
+        let input = "123".to_string();
+        assert!(input.h_validate_input(InputType::Integer).is_ok());
+    }
+
+    #[test]
+    fn test_validate_input_integer_invalid() {
+        let input = "123a".to_string();
+        assert!(input.h_validate_input(InputType::Integer).is_err());
+    }
+
+    #[test]
+    fn test_validate_input_empty() {
+        let input = "".to_string();
+        assert!(input.h_validate_input(InputType::Lowercase).is_err());
     }
 }

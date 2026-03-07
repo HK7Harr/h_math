@@ -37,9 +37,9 @@ let volume = 5.0.h_sphere_volume();
 - **Formula**: n! = n × (n-1) × (n-2) × ... × 1
 - **Panics**: If given a negative number
 
-#### Root Degree Trait
-- **Function**: `h_root_degree(degree: u32)`
-- **Input**: Self (numeric type), degree (u32)
+#### h_root_degree Function
+- **Signature**: `h_root_degree<T>(value: T, degree: u32) -> f64`
+- **Input**: Value and degree
 - **Output**: `f64`
 - **Purpose**: Calculates the nth root of a number
 - **Formula**: ⁿ√x = x^(1/n)
@@ -49,14 +49,15 @@ let volume = 5.0.h_sphere_volume();
 - **Input**: start value, number of repetitions, step size
 - **Output**: `f64` (sum)
 - **Purpose**: Calculates the sum of an arithmetic sequence
-- **Example**: h_sigma(1, 5, 1) sums 1+2+3+4+5 = 15
+- **Formula**: sum = start + (start + steps) + ... for repetitions terms
+- **Example**: h_sigma(1.0, 5, 1.0) sums 1+2+3+4+5 = 15.0
 
-#### h_arrange_vec Function
-- **Signature**: `h_arrange_vec<I>(start: I, stop: I, step: I) -> Vec<f64>`
-- **Input**: start value, stop value, step size
-- **Output**: `Vec<f64>` containing evenly spaced values
-- **Purpose**: Creates a vector of evenly spaced numbers from start to stop
-- **Returns empty**: If step is 0, or if direction is invalid (positive step but start > stop)
+#### h_arrange_vec_exclusive Function
+- **Signature**: `h_arrange_vec_exclusive<I>(start: I, stop: I, step: I) -> Vec<f64>`
+- **Input**: start value, stop value (exclusive), step size
+- **Output**: `Vec<f64>` containing evenly spaced values from start to stop
+- **Purpose**: Creates a vector of evenly spaced numbers
+- **Behavior**: Returns empty if step is 0 or invalid direction
 
 #### h_pi Function
 - **Signature**: `h_pi() -> f64`
@@ -279,43 +280,43 @@ let volume = 5.0.h_sphere_volume();
 - **Purpose**: Calculates the surface area of a cube
 - **Formula**: A = 6s²
 
-#### ConeVolume Trait
-- **Function**: `h_cone_volume(height: H)`
+#### h_cone_volume Function
+- **Signature**: `h_cone_volume<R, H>(radius: R, height: H) -> f64`
 - **Input**: Radius and height of cone
 - **Output**: `f64`
 - **Purpose**: Calculates the volume of a cone
 - **Formula**: V = (1/3)πr²h
 
-#### ConeSurfaceArea Trait
-- **Function**: `h_cone_surface_area(height: H)`
+#### h_cone_surface_area Function
+- **Signature**: `h_cone_surface_area<R, H>(radius: R, height: H) -> f64`
 - **Input**: Radius and height of cone
 - **Output**: `f64`
 - **Purpose**: Calculates the surface area of a cone
 - **Formula**: A = πr(r + √(r² + h²)) where √(r² + h²) is the slant height
 
-#### RectangularPrismVolume Trait
-- **Function**: `h_rectangular_prism_volume(height: H)`
-- **Input**: Length/width and height of rectangular prism
+#### h_rectangular_prism_volume Function
+- **Signature**: `h_rectangular_prism_volume<L, W, H>(length: L, width: W, height: H) -> f64`
+- **Input**: Length, width, and height of rectangular prism
 - **Output**: `f64`
 - **Purpose**: Calculates the volume of a rectangular prism
 - **Formula**: V = l × w × h
 
-#### RectangularPrismSurfaceArea Trait
-- **Function**: `h_rectangular_prism_surface_area(height: H)`
-- **Input**: Length/width and height of rectangular prism
+#### h_rectangular_prism_surface_area Function
+- **Signature**: `h_rectangular_prism_surface_area<L, W, H>(length: L, width: W, height: H) -> f64`
+- **Input**: Length, width, and height of rectangular prism
 - **Output**: `f64`
 - **Purpose**: Calculates the surface area of a rectangular prism
 - **Formula**: A = 2(lw + lh + wh)
 
-#### PyramidVolume Trait
-- **Function**: `h_pyramid_volume(height: H)`
+#### h_pyramid_volume Function
+- **Signature**: `h_pyramid_volume<B, H>(base_area: B, height: H) -> f64`
 - **Input**: Base area and height of pyramid
 - **Output**: `f64`
 - **Purpose**: Calculates the volume of a pyramid
 - **Formula**: V = (1/3) × base_area × height
 
-#### SquarePyramidSurfaceArea Trait
-- **Function**: `h_square_pyramid_surface_area(height: H)`
+#### h_square_pyramid_surface_area Function
+- **Signature**: `h_square_pyramid_surface_area<B, H>(base_area: B, height: H) -> f64`
 - **Input**: Base area and height of square pyramid
 - **Output**: `f64`
 - **Purpose**: Calculates the surface area of a square pyramid
@@ -344,7 +345,34 @@ let volume = 5.0.h_sphere_volume();
 - **Purpose**: Calculates the price after a percentage increase
 - **Formula**: new_price = original × (1 + percentage/100)
 
-### Probability Functions
+### Functionality Functions
+
+#### h_list_to_hashmap Function
+- **Signature**: `h_list_to_hashmap<K, V>(keys: &[K], values: &[V]) -> Result<HashMap<K, V>, Vec<ListToHashMapError<K>>>`
+- **Input**: Slices of keys and values
+- **Output**: `Result<HashMap<K, V>, Vec<ListToHashMapError<K>>>`
+- **Purpose**: Converts lists of keys and values into a HashMap, checking for length mismatch and duplicate keys
+- **Errors**: Returns errors for mismatched lengths or duplicate keys
+
+#### ValidateInput Trait
+- **Function**: `h_validate_input(input_requirements: InputType) -> Result<(), String>`
+- **Input**: String and validation type (Lowercase, Uppercase, Letters, Integer)
+- **Output**: `Result<(), String>`
+- **Purpose**: Validates a string based on specified requirements
+- **Returns**: Ok(()) if valid, Err with message if invalid
+
+### Machine Learning Functions
+
+#### Perceptron Struct
+- **Description**: A simple Perceptron implementation for binary classification
+- **Methods**:
+  - `new(eta: f64, epochs: u32, x_features: usize) -> Perceptron`: Creates a new Perceptron with learning rate, epochs, and feature count
+  - `fit(&mut self, x: &Vec<Vec<X>>, y: &Vec<Y>)`: Trains the Perceptron on dataset x (features) and y (labels)
+  - `net_input(&self, x_row: &Vec<X>) -> f64`: Computes the net input (weighted sum + bias)
+  - `predict_num(&self, x_row: &Vec<X>) -> i32`: Predicts the numeric class (0 or 1)
+  - `predict(&self, x_row: &Vec<X>) -> &'static str`: Predicts the original label
+- **Purpose**: Linear binary classifier using the perceptron learning algorithm
+- **Algorithm**: Updates weights and bias based on prediction errors over multiple epochs
 
 #### h_permutations Function
 - **Signature**: `h_permutations<T, S>(total: &T, select: &S) -> u64`
@@ -509,3 +537,4 @@ let volume = 5.0.h_sphere_volume();
   - `Integer`: Only digits 0-9 allowed (must be parseable as i32)
 - **Returns Error**: If input is empty or contains invalid characters
 
+## This documentation is generated by AI, because i purely like coding and not redundant explanations, thus the documentation MAY contain inaccuracies.

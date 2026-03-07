@@ -6,5 +6,6 @@ pub use crate::functionality::*;
 pub use crate::geometry::*;
 pub use crate::linear_algebra::*;
 pub use crate::probability::*;
-pub use crate::statisticss::*;
+pub use crate::statistics::*;
 pub use crate::terminal_input::*;
+pub use crate::machine_learning::*;

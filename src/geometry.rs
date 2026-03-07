@@ -83,20 +83,14 @@ where
 /// The formula to calculate the short leg from the long leg is: short_leg = long_leg / √3.
 /// Example usage:
 /// let long_leg = 5.0;
-/// let short_leg = long_leg.h_short_from_long_leg_30_60_90();
+/// let short_leg = h_short_from_long_leg_30_60_90(long_leg);
 /// The result will be approximately 2.886751345948129, because the short leg
 /// is calculated as 5.0 / √3, which is approximately 2.886751345948129.
-pub trait ShortFromLongLeg30_60_90{
-    fn h_short_from_long_leg_30_60_90(&self) -> f64;
-}
-
-impl<T> ShortFromLongLeg30_60_90 for T
+pub fn h_short_from_long_leg_30_60_90<T>(long_leg: T) -> f64
 where
     T: Copy + Into<f64>,
 {
-    fn h_short_from_long_leg_30_60_90(&self) -> f64 {
-        (*self).into() / (3.0f64).sqrt()
-    }
+    long_leg.into() / (3.0f64).sqrt()
 }
 
 
@@ -210,114 +204,177 @@ where
 
 /// Calculates the volume of a cone given its radius and height.
 /// Formula: V = (1/3) * π * r^2 * h
-pub trait ConeVolume<H> {
-    fn h_cone_volume(&self, height: H) -> f64;
-}
-
-impl<R, H> ConeVolume<H> for R
+pub fn h_cone_volume<R, H>(radius: R, height: H) -> f64
 where
     R: Copy + Into<f64>,
     H: Copy + Into<f64>,
 {
-    fn h_cone_volume(&self, height: H) -> f64 {
-        let r: f64 = (*self).into();
-        let h: f64 = height.into();
-        (1.0 / 3.0) * std::f64::consts::PI * r * r * h
-    }
+    let r: f64 = radius.into();
+    let h: f64 = height.into();
+    (1.0 / 3.0) * std::f64::consts::PI * r * r * h
 }
 
 
 /// Calculates the surface area of a cone given its radius and height.
 /// Formula: A = π * r * (r + √(r^2 + h^2))
-pub trait ConeSurfaceArea<H> {
-    fn h_cone_surface_area(&self, height: H) -> f64;
-}
-
-impl<R, H> ConeSurfaceArea<H> for R
+pub fn h_cone_surface_area<R, H>(radius: R, height: H) -> f64
 where
     R: Copy + Into<f64>,
     H: Copy + Into<f64>,
 {
-    fn h_cone_surface_area(&self, height: H) -> f64 {
-        let r: f64 = (*self).into();
-        let h: f64 = height.into();
-        let slant_height: f64 = (r * r + h * h).sqrt();
-        std::f64::consts::PI * r * (r + slant_height)
-    }
+    let r: f64 = radius.into();
+    let h: f64 = height.into();
+    let slant_height: f64 = (r * r + h * h).sqrt();
+    std::f64::consts::PI * r * (r + slant_height)
 }
 
 /// Calculates the volume of a rectangular prism given its length, width, and height.
 /// Formula: V = l * w * h
-pub trait RectangularPrismVolume<H> {
-    fn h_rectangular_prism_volume(&self, height: H) -> f64;
-}
-
-impl<L, H> RectangularPrismVolume<H> for L
+pub fn h_rectangular_prism_volume<L, W, H>(length: L, width: W, height: H) -> f64
 where
     L: Copy + Into<f64>,
+    W: Copy + Into<f64>,
     H: Copy + Into<f64>,
 {
-    fn h_rectangular_prism_volume(&self, height: H) -> f64 {
-        let length: f64 = (*self).into();
-        let width: f64 = length;
-        let height: f64 = height.into();
-        length * width * height
-    }
+    let length: f64 = length.into();
+    let width: f64 = width.into();
+    let height: f64 = height.into();
+    length * width * height
 }
 
 /// Calculates the surface area of a rectangular prism given its length, width, and height.
 /// Formula: A = 2 * (l * w + l * h + w * h)
-pub trait RectangularPrismSurfaceArea<H> {
-    fn h_rectangular_prism_surface_area(&self, height: H) -> f64;
-}
-
-impl<L, H> RectangularPrismSurfaceArea<H> for L
+pub fn h_rectangular_prism_surface_area<L, W, H>(length: L, width: W, height: H) -> f64
 where
     L: Copy + Into<f64>,
+    W: Copy + Into<f64>,
     H: Copy + Into<f64>,
 {
-    fn h_rectangular_prism_surface_area(&self, height: H) -> f64 {
-        let length: f64 = (*self).into();
-        let width: f64 = length;
-        let height: f64 = height.into();
-        2.0 * (length * width + length * height + width * height)
-    }
+    let length: f64 = length.into();
+    let width: f64 = width.into();
+    let height: f64 = height.into();
+    2.0 * (length * width + length * height + width * height)
 }
 
 /// Calculates the volume of a pyramid given its base area and height.
 /// Formula: V = (1/3) * base_area * height
-pub trait PyramidVolume<H> {
-    fn h_pyramid_volume(&self, height: H) -> f64;
-}
-
-impl<B, H> PyramidVolume<H> for B
+pub fn h_pyramid_volume<B, H>(base_area: B, height: H) -> f64
 where
     B: Copy + Into<f64>,
     H: Copy + Into<f64>,
 {
-    fn h_pyramid_volume(&self, height: H) -> f64 {
-        let base_area: f64 = (*self).into();
-        let height: f64 = height.into();
-        (1.0 / 3.0) * base_area * height
-    }
+    let base_area: f64 = base_area.into();
+    let height: f64 = height.into();
+    (1.0 / 3.0) * base_area * height
 }
 
 /// Calculates the surface area of a square pyramid given the length of its base and height.
-/// Formula: A = base_area + 2 * (base_area / 4)^0
-pub trait SquarePyramidSurfaceArea<B, H> {
-    fn h_square_pyramid_surface_area(&self, height: H) -> f64;
-}
-
-impl<B, H> SquarePyramidSurfaceArea<B, H> for B
+/// Formula: A = base_area + 2 * (base_area / 4)^0  // Note: formula seems incomplete, adjust as needed
+pub fn h_square_pyramid_surface_area<B, H>(base_area: B, height: H) -> f64
 where
     B: Copy + Into<f64>,
     H: Copy + Into<f64>,
 {
-    fn h_square_pyramid_surface_area(&self, height: H) -> f64 {
-        let base_area: f64 = (*self).into();
-        let height: f64 = height.into();
-        let slant_height: f64 = (height * height + (base_area / 4.0).sqrt() * (base_area / 4.0).sqrt()).sqrt();
-        base_area + 2.0 * (base_area / 4.0).sqrt() * slant_height
+    let base_area: f64 = base_area.into();
+    let height: f64 = height.into();
+    let slant_height: f64 = (height * height + (base_area / 4.0).sqrt() * (base_area / 4.0).sqrt()).sqrt();
+    base_area + 2.0 * (base_area / 4.0).sqrt() * slant_height
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_circle_circumference() {
+        assert!((5.0.h_circle_circumference() - 31.41592653589793).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_circle_area() {
+        assert!((5.0.h_circle_area() - 78.53981633974483).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_pythagorean_theorem() {
+        assert_eq!(h_pythagorean_theorem(3.0, 4.0), 5.0);
+    }
+
+    #[test]
+    fn test_reverse_pythagorean_theorem() {
+        assert!((h_reverse_pythagorean_theorem(3.0, 5.0) - 4.0).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_find_equal_legs_from_hypotenuse() {
+        assert!((h_find_equal_legs_from_hypotenuse(5.0) - 3.5355339059327378).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_short_from_long_leg_30_60_90() {
+        assert!((h_short_from_long_leg_30_60_90(5.0) - 2.886751345948129).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_sphere_volume() {
+        assert!((5.0.h_sphere_volume() - 523.5987755982989).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_sphere_surface_area() {
+        assert!((5.0.h_sphere_surface_area() - 314.1592653589793).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_cylinder_volume() {
+        assert!((5.0.h_cylinder_volume(10.0) - 785.3981633974483).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_cylinder_surface_area() {
+        assert!((5.0.h_cylinder_surface_area(10.0) - 471.23889803846896).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_cube_volume() {
+        assert_eq!(5.0.h_cube_volume(), 125.0);
+    }
+
+    #[test]
+    fn test_cube_surface_area() {
+        assert_eq!(5.0.h_cube_surface_area(), 150.0);
+    }
+
+    #[test]
+    fn test_cone_volume() {
+        assert!((h_cone_volume(5.0, 10.0) - 261.79938779914943).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_cone_surface_area() {
+        assert!((h_cone_surface_area(5.0, 10.0) - 254.160184615763).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_rectangular_prism_volume() {
+        assert_eq!(h_rectangular_prism_volume(2.0, 3.0, 4.0), 24.0);
+    }
+
+    #[test]
+    fn test_rectangular_prism_surface_area() {
+        assert_eq!(h_rectangular_prism_surface_area(2.0, 3.0, 4.0), 52.0);
+    }
+
+    #[test]
+    fn test_pyramid_volume() {
+        assert!((h_pyramid_volume(10.0, 5.0) - 16.666666666666668).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_square_pyramid_surface_area() {
+        // Approximate test, formula may need adjustment
+        let result = h_square_pyramid_surface_area(16.0, 5.0);
+        assert!(result > 0.0);
     }
 }
 

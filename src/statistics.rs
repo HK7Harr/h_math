@@ -215,7 +215,7 @@ where
     T: Copy + Into<f64>,
 {
     fn h_std_dev_population(&self) -> f64 {
-        let variance = self.h_sample_variance();
+        let variance = self.h_population_variance();
         variance.sqrt()
     }
 }
@@ -241,6 +241,67 @@ where
     fn h_std_dev_sample(&self) -> f64 {
         let variance = self.h_sample_variance();
         variance.sqrt()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_mean() {
+        let data = vec![1.0, 2.0, 3.0];
+        assert_eq!(data.h_mean(), 2.0);
+    }
+
+    #[test]
+    fn test_median_odd() {
+        let data = vec![1.0, 2.0, 3.0];
+        assert_eq!(data.h_median(), 2.0);
+    }
+
+    #[test]
+    fn test_median_even() {
+        let data = vec![1.0, 2.0, 3.0, 4.0];
+        assert_eq!(data.h_median(), 2.5);
+    }
+
+    #[test]
+    fn test_population_variance() {
+        let data = vec![1.0, 2.0, 3.0];
+        assert!((data.h_population_variance() - 0.6666666666666666).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_sample_variance() {
+        let data = vec![1.0, 2.0, 3.0];
+        assert_eq!(data.h_sample_variance(), 1.0);
+    }
+
+    #[test]
+    fn test_modus_mult() {
+        let data = vec![1.0, 2.0, 2.0, 3.0];
+        let modes = data.h_modus_mult();
+        assert_eq!(modes, vec![2.0]);
+    }
+
+    #[test]
+    fn test_modus_mult_no_mode() {
+        let data = vec![1.0, 2.0, 3.0];
+        let modes = data.h_modus_mult();
+        assert_eq!(modes, vec![]);
+    }
+
+    #[test]
+    fn test_std_dev_population() {
+        let data = vec![1.0, 2.0, 3.0];
+        assert!((data.h_std_dev_population() - 0.816496580927726).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_std_dev_sample() {
+        let data = vec![1.0, 2.0, 3.0];
+        assert_eq!(data.h_std_dev_sample(), 1.0);
     }
 }
 

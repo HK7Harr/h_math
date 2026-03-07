@@ -117,7 +117,40 @@ where
         ((original_value - new_value) / original_value) * 100.0
     }
 }
+#[cfg(test)]
+mod tests {
+    use super::*;
 
+    #[test]
+    fn test_roi() {
+        assert_eq!(100.0.h_return_on_investment(150.0), 50.0);
+        assert_eq!(200.0.h_return_on_investment(180.0), -10.0);
+    }
+
+    #[test]
+    fn test_decreased_price() {
+        assert_eq!(100.0.h_decreased_price(20.0), 80.0);
+        assert_eq!(200.0.h_decreased_price(10.0), 180.0);
+    }
+
+    #[test]
+    fn test_increased_price() {
+        assert!((100.0.h_increased_price(20.0) - 120.0).abs() < 1e-10);
+        assert!((200.0.h_increased_price(10.0) - 220.0).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_increase_percent_from_original() {
+        assert_eq!(100.0.h_increase_percent_from_original(150.0), 50.0);
+        assert_eq!(200.0.h_increase_percent_from_original(180.0), -10.0);
+    }
+
+    #[test]
+    fn test_decrease_percent_from_original() {
+        assert_eq!(100.0.h_decrease_percent_from_original(80.0), 20.0);
+        assert_eq!(200.0.h_decrease_percent_from_original(220.0), -10.0);
+    }
+}
 
 
 
