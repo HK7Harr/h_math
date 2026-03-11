@@ -5,12 +5,12 @@ use std::iter::zip;
 /// Formula: C = A ⊙ B, where C[i] = A[i] * B[i]
 ///
 /// Example:
-/// ```rust
+/// 
 /// let vec1 = vec![1.0, 2.0, 3.0];
 /// let vec2 = vec![4.0, 5.0, 6.0];
 /// let result = h_hadamard(&vec1, &vec2);
 /// assert_eq!(result, vec![4.0, 10.0, 18.0]);
-/// ```
+/// The Hadamard product is calculated as (1*4, 2*5, 3*6) = (4.0, 10.0, 18.0).
 
 pub fn h_hadamard<I, T>(vec1: &[I], vec2: &[T]) -> Vec<f64> 
 where
@@ -32,12 +32,12 @@ where
 /// Formula: C = A · B, where C = Σ(A[i] * B[i])
 ///
 /// Example:
-/// ```rust
+/// 
 /// let vec1 = vec![1.0, 2.0, 3.0];
 /// let vec2 = vec![4.0, 5.0, 6.0];
 /// let result = h_dot(&vec1, &vec2);
 /// assert_eq!(result, 32.0);
-/// ```
+/// The dot product is calculated as (1*4) + (2*5) + (3*6) = 4 + 10 + 18 = 32.0.
 
 pub fn h_dot<A, B>(vec1: &[A], vec2: &[B]) -> f64 
 where 
@@ -67,10 +67,10 @@ where
 ///
 /// # Examples
 ///
-/// ```rust
+/// 
 /// let v = vec![3.0, 4.0];
 /// assert_eq!(v.h_magnitude(), 5.0);
-/// ```
+/// 
 ///
 /// The trait is implemented for slices whose element type can be converted into
 /// `f64`.
@@ -97,12 +97,12 @@ where
 /// Formula: C = A + B, where C[i] = A[i] + B[i]
 ///
 /// Example:
-/// ```rust
+/// 
 /// let vec1 = vec![1.0, 2.0, 3.0];
 /// let vec2 = vec![4.0, 5.0, 6.0];
 /// let result = h_vector_add(&vec1, &vec2);
 /// assert_eq!(result, vec![5.0, 7.0, 9.0]);
-/// ```
+/// The vector addition is calculated as (1+4, 2+5, 3+6) = (5.0, 7.0, 9.0).
 
 pub fn h_vector_add<T, I>(vec1: &[T], vec2: &[I]) -> Vec<f64>
 where
@@ -122,12 +122,12 @@ where
 /// the same length.
 ///
 /// Example:
-/// ```rust
+/// 
 /// let vec1 = vec![5.0, 7.0, 9.0];
 /// let vec2 = vec![1.0, 2.0, 3.0];
 /// let result = h_vector_sub(&vec1, &vec2);
 /// assert_eq!(result, vec![4.0, 5.0, 6.0]);
-/// ```
+/// 
 pub fn h_vector_sub<T, I>(vec1: &[T], vec2: &[I]) -> Vec<f64>
 where
     T: Copy + Into<f64>,
@@ -149,11 +149,9 @@ where
 /// each element of `my_slice` multiplied by `k`.
 ///
 /// # Example
-///
-/// ```rust
 /// let v = vec![1.0, 2.0, 3.0];
 /// assert_eq!(v.h_vector_scalar_mult(2.0), vec![2.0, 4.0, 6.0]);
-/// ```
+
 pub trait VectorScalarMultiply<S>
 where
     S: Copy + Into<f64>,
@@ -181,10 +179,10 @@ where
 ///
 /// # Example
 ///
-/// ```rust
+/// 
 /// let v = vec![4.0, 6.0, 8.0];
 /// assert_eq!(v.h_vector_scalar_div(2.0), vec![2.0, 3.0, 4.0]);
-/// ```
+/// The vector scalar division is calculated as (4/2, 6/2, 8/2) = (2.0, 3.0, 4.0).
 pub trait VectorScalarDivision<S>
 where
     S: Copy + Into<f64>,
@@ -222,12 +220,12 @@ pub enum Measurement {
 ///
 /// # Examples
 ///
-/// ```rust
+/// 
 /// use h_math::linear_algebra::{h_vectors_angle, Measurement};
 /// let a = vec![0.0, 1.0];
 /// let b = vec![1.0, 0.0];
 /// assert_eq!(h_vectors_angle(&a, &b, Measurement::Degrees).unwrap(), 90.0);
-/// ```
+/// The angle between the vectors (0, 1) and (1, 0) is 90 degrees because they are perpendicular to each other.
 pub fn h_vectors_angle<T, I>(vec1: &[T], vec2: &[I], return_measurement: Measurement) -> Option<f64> 
 where   
     T: Copy + Into<f64>,

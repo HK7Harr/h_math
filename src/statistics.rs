@@ -266,11 +266,9 @@ where
 /// - `Some(vec![i, ...])` where each `i` is the data index where a cross occurred
 ///
 /// # Example
-/// ```
 /// let data = vec![5.0, 4.0, 3.0, 4.0, 6.0, 8.0, 10.0];
 /// let crosses = data.h_golden_cross(2, 3);
 /// assert!(crosses.unwrap().len() > 0);
-/// ```
 ///
 /// A perfectly linear increasing sequence like `vec![1,2,3,4,5,6]` will return
 /// `Some(vec![])` because the short and long MAs are always equal — no crossover occurs.
@@ -353,11 +351,10 @@ where
 /// - `Some(vec![i, ...])` where each `i` is the data index where a cross occurred
 ///
 /// # Example
-/// ```
+/// 
 /// let data = vec![5.0, 6.0, 8.0, 6.0, 4.0, 2.0, 1.0];
 /// let crosses = data.h_death_cross(2, 3);
 /// assert!(crosses.unwrap().len() > 0);
-/// ```
 ///
 /// A perfectly linear decreasing sequence like `vec![6,5,4,3,2,1]` will return
 /// `Some(vec![])` because the short and long MAs are always equal — no crossover occurs.
