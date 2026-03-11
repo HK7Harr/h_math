@@ -30,7 +30,7 @@ where
 /// let vec2 = vec![4.0, 5.0, 6.0];
 /// let result = h_2d_dot_product(&vec1, &vec2);
 /// The result will be 32.0, because 1*4 + 2*5 + 3*6 = 4 + 10 + 18 = 32.
-pub fn h_2d_dot_product<A, B>(vec1: &Vec<A>, vec2: &Vec<B>) -> f64 
+pub fn h_dot<A, B>(vec1: &[A], vec2: &[B]) -> f64 
 where 
     A: Copy + Into<f64>,
     B: Copy + Into<f64>,
@@ -59,14 +59,14 @@ where
 /// it is implemented for n-dimensional space but i dont know why anyone would want to use it for more than 3 dimensions, but it is there if you need it.
 /// nut the feature is there if you need it.
 pub trait Magnitude {
-    fn h_vector_magnitude(&self) -> f64;
+    fn h_magnitude(&self) -> f64;
 }
 
 impl<T> Magnitude for [T] 
 where 
     T: Copy + Into<f64>,
 {
-    fn h_vector_magnitude(&self) -> f64 {
+    fn h_magnitude(&self) -> f64 {
         let sum_of_squares: f64 = self.iter().map(|x| {
             let v: f64 = (*x).into();
             v * v
@@ -142,6 +142,18 @@ where
     }
 }
 
+pub fn h_angle_between_vectors<T, I>(vec1: &[T], vec2: &[I]) -> f64 
+where   
+    T: Copy + Into<f64>,
+    I: Copy + Into<f64>,
+{
+    let vec1_magnitude: f64 = vec1.h_magnitude();
+    let vec2_magnitude: f64 = vec2.h_magnitude();
+
+    let angle_between: f64 = ((h_dot(vec1, vec2))/(vec1_magnitude*vec2_magnitude)).acos();
+    return angle_between;
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -155,17 +167,17 @@ mod tests {
     }
 
     #[test]
-    fn test_h_2d_dot_product() {
+    fn test_h_dot() {
         let vec1 = vec![1.0, 2.0, 3.0];
         let vec2 = vec![4.0, 5.0, 6.0];
-        let result = h_2d_dot_product(&vec1, &vec2);
+        let result = h_dot(&vec1, &vec2);
         assert_eq!(result, 32.0);
     }
 
     #[test]
-    fn test_vector_magnitude() {
+    fn test_magnitude() {
         let vec = vec![3.0, 4.0];
-        assert_eq!(vec.h_vector_magnitude(), 5.0);
+        assert_eq!(vec.h_magnitude(), 5.0);
     }
 
     #[test]
