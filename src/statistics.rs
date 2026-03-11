@@ -1,3 +1,6 @@
+
+
+
 // -------------------------------- Statistics ---------------------------------
 
 /// Calculates the mean (average) of a dataset. The mean is calculated by summing all the values and dividing by the number of observations.
@@ -244,6 +247,180 @@ where
     }
 }
 
+
+
+/// Identifies the indices where a golden cross occurs in a dataset.
+///
+/// A golden cross occurs when a short-term moving average crosses **above** a
+/// long-term moving average. This is commonly interpreted as a bullish signal
+/// in financial analysis.
+///
+/// # Parameters
+/// - `short_moving_average`: the window size for the short-term moving average
+/// - `long_moving_average`: the window size for the long-term moving average
+///
+/// # Returns
+/// - `None` if the dataset is shorter than `long_moving_average`, or if
+///   `short_moving_average >= long_moving_average`
+/// - `Some(vec![])` if no golden cross was found
+/// - `Some(vec![i, ...])` where each `i` is the data index where a cross occurred
+///
+/// # Example
+/// ```
+/// let data = vec![5.0, 4.0, 3.0, 4.0, 6.0, 8.0, 10.0];
+/// let crosses = data.h_golden_cross(2, 3);
+/// assert!(crosses.unwrap().len() > 0);
+/// ```
+///
+/// A perfectly linear increasing sequence like `vec![1,2,3,4,5,6]` will return
+/// `Some(vec![])` because the short and long MAs are always equal — no crossover occurs.
+pub trait GoldenCross {
+    fn h_golden_cross(&self, short_moving_average: usize, long_moving_average: usize) -> Option<Vec<usize>>;
+}
+
+impl<D> GoldenCross for [D] 
+where   
+    D: Copy + Into<f64>,
+{
+    fn h_golden_cross(&self, short_moving_average: usize, long_moving_average: usize) -> Option<Vec<usize>> {
+        if self.len() < long_moving_average {
+            return None;
+        }
+        if short_moving_average >= long_moving_average {
+            return None;
+        }
+
+        let mut short_ma: Vec<(f64, usize)> = Vec::new();
+        let mut long_ma: Vec<(f64, usize)> = Vec::new();
+
+        let mut short_moving_data: Vec<f64> = Vec::new();
+        let mut long_moving_data: Vec<f64> = Vec::new();
+
+        for (index, d) in self.iter().enumerate() {
+            short_moving_data.push((*d).into());
+            long_moving_data.push((*d).into());
+
+            if short_moving_data.len() > short_moving_average {
+                short_moving_data.remove(0);
+            }
+            if long_moving_data.len() > long_moving_average {
+                long_moving_data.remove(0);
+            }
+
+            if short_moving_data.len() == short_moving_average {
+                short_ma.push((short_moving_data.h_mean(), index));
+            }
+            if long_moving_data.len() == long_moving_average {
+                long_ma.push((long_moving_data.h_mean(), index));
+            }
+        }
+
+        let mut golden_crosses: Vec<usize> = Vec::new();
+
+        for i in 1..long_ma.len() {
+            let (long_curr, idx) = long_ma[i];
+            let (long_prev, _) = long_ma[i - 1];
+
+            if let (Some(s_curr), Some(s_prev)) = (
+                short_ma.iter().find(|x| x.1 == idx),
+                short_ma.iter().find(|x| x.1 == idx - 1),
+            ) {
+                if s_curr.0 > long_curr && s_prev.0 <= long_prev {
+                    golden_crosses.push(idx);
+                }
+            }
+        }
+        Some(golden_crosses)
+    }   
+}
+
+
+
+/// Identifies the indices where a death cross occurs in a dataset.
+///
+/// A death cross occurs when a short-term moving average crosses **below** a
+/// long-term moving average. This is commonly interpreted as a bearish signal
+/// in financial analysis.
+///
+/// # Parameters
+/// - `short_moving_average`: the window size for the short-term moving average
+/// - `long_moving_average`: the window size for the long-term moving average
+///
+/// # Returns
+/// - `None` if the dataset is shorter than `long_moving_average`, or if
+///   `short_moving_average >= long_moving_average`
+/// - `Some(vec![])` if no death cross was found
+/// - `Some(vec![i, ...])` where each `i` is the data index where a cross occurred
+///
+/// # Example
+/// ```
+/// let data = vec![5.0, 6.0, 8.0, 6.0, 4.0, 2.0, 1.0];
+/// let crosses = data.h_death_cross(2, 3);
+/// assert!(crosses.unwrap().len() > 0);
+/// ```
+///
+/// A perfectly linear decreasing sequence like `vec![6,5,4,3,2,1]` will return
+/// `Some(vec![])` because the short and long MAs are always equal — no crossover occurs.
+pub trait DeathCross {
+    fn h_death_cross(&self, short_moving_average: usize, long_moving_average: usize) -> Option<Vec<usize>>;
+}
+
+impl<D> DeathCross for [D] 
+where   
+    D: Copy + Into<f64>,
+{
+    fn h_death_cross(&self, short_moving_average: usize, long_moving_average: usize) -> Option<Vec<usize>> {
+        if self.len() < long_moving_average {
+            return None;
+        }
+        if short_moving_average >= long_moving_average {
+            return None;
+        }
+
+        let mut short_ma: Vec<(f64, usize)> = Vec::new();
+        let mut long_ma: Vec<(f64, usize)> = Vec::new();
+
+        let mut short_moving_data: Vec<f64> = Vec::new();
+        let mut long_moving_data: Vec<f64> = Vec::new();
+
+        for (index, d) in self.iter().enumerate() {
+            short_moving_data.push((*d).into());
+            long_moving_data.push((*d).into());
+
+            if short_moving_data.len() > short_moving_average {
+                short_moving_data.remove(0);
+            }
+            if long_moving_data.len() > long_moving_average {
+                long_moving_data.remove(0);
+            }
+
+            if short_moving_data.len() == short_moving_average {
+                short_ma.push((short_moving_data.h_mean(), index));
+            }
+            if long_moving_data.len() == long_moving_average {
+                long_ma.push((long_moving_data.h_mean(), index));
+            }
+        }
+
+        let mut death_crosses: Vec<usize> = Vec::new();
+
+        for i in 1..long_ma.len() {
+            let (long_curr, idx) = long_ma[i];
+            let (long_prev, _) = long_ma[i - 1];
+
+            if let (Some(s_curr), Some(s_prev)) = (
+                short_ma.iter().find(|x| x.1 == idx),
+                short_ma.iter().find(|x| x.1 == idx - 1),
+            ) {
+                if s_curr.0 < long_curr && s_prev.0 >= long_prev {
+                    death_crosses.push(idx);
+                }
+            }
+        }
+        Some(death_crosses)
+    }   
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -302,6 +479,20 @@ mod tests {
     fn test_std_dev_sample() {
         let data = vec![1.0, 2.0, 3.0];
         assert_eq!(data.h_std_dev_sample(), 1.0);
+    }
+
+    #[test]
+    fn test_golden_cross() {
+        let data = vec![5.0, 4.0, 3.0, 4.0, 6.0, 8.0, 10.0];
+        let golden_crosses = data.h_golden_cross(2, 3);
+        assert!(golden_crosses.unwrap().len() > 0);
+    }
+
+    #[test]
+    fn test_death_cross() {
+        let data = vec![5.0, 6.0, 8.0, 6.0, 4.0, 2.0, 1.0];
+        let death_crosses = data.h_death_cross(2, 3);
+        assert!(death_crosses.unwrap().len() > 0);
     }
 }
 

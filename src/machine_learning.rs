@@ -104,7 +104,7 @@ impl Perceptron {
     where   
         X: Copy + Into<f64>,
     {
-        return h_2d_dot_product(&x_row, &self.weights) + self.bias;
+        return h_dot(&x_row, &self.weights) + self.bias;
     }
 
     /// Predicts the numeric class (0 or 1) for a given input vector.
@@ -150,6 +150,7 @@ impl Perceptron {
         return answers;
     }
 }
+
 
 
 #[cfg(test)]

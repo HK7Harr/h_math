@@ -1,20 +1,25 @@
 use std::iter::zip;
 
-/// Hadamard product of two vectors. The vectors must have the same length.
+/// Hadamard product (element-wise multiplication) of two vectors.
+/// Both vectors must have the same length.
 /// Formula: C = A ⊙ B, where C[i] = A[i] * B[i]
+///
 /// Example:
+/// ```rust
 /// let vec1 = vec![1.0, 2.0, 3.0];
 /// let vec2 = vec![4.0, 5.0, 6.0];
-/// let result = h_hadamard_product(&vec1, &vec2);
-/// The result will be vec![4.0, 10.0, 18.0], because C[0] = 1*4 = 4, C[1] = 2*5 = 10, C[2] = 3*6 = 18.
-pub fn h_hadamard_product<I, T>(vec1: &[I], vec2: &[T]) -> Vec<f64> 
+/// let result = h_hadamard(&vec1, &vec2);
+/// assert_eq!(result, vec![4.0, 10.0, 18.0]);
+/// ```
+
+pub fn h_hadamard<I, T>(vec1: &[I], vec2: &[T]) -> Vec<f64> 
 where
     T: Copy + Into<f64>,
     I: Copy + Into<f64>,
 {
     let mut new_vec: Vec<f64> = Vec::new();
     if vec1.len() != vec2.len() {
-        panic!("from: h_hadamard_product, Vectors must have the same length");
+        panic!("from: h_hadamard, vectors must have the same length");
     }
     for (a, b) in zip(vec1, vec2) {
         new_vec.push((*a).into() * (*b).into())
@@ -25,18 +30,22 @@ where
 
 /// Calculates the dot product of two vectors. The vectors must have the same length.
 /// Formula: C = A · B, where C = Σ(A[i] * B[i])
+///
 /// Example:
+/// ```rust
 /// let vec1 = vec![1.0, 2.0, 3.0];
 /// let vec2 = vec![4.0, 5.0, 6.0];
-/// let result = h_2d_dot_product(&vec1, &vec2);
-/// The result will be 32.0, because 1*4 + 2*5 + 3*6 = 4 + 10 + 18 = 32.
+/// let result = h_dot(&vec1, &vec2);
+/// assert_eq!(result, 32.0);
+/// ```
+
 pub fn h_dot<A, B>(vec1: &[A], vec2: &[B]) -> f64 
 where 
     A: Copy + Into<f64>,
     B: Copy + Into<f64>,
 {
     if vec1.len() != vec2.len() {
-        panic!("h_2d_dot_product, the two vectors does not have the same length");
+        panic!("h_dot: the two vectors do not have the same length");
     }
     let mut sum: f64 = 0.0;
     for (a, b) in zip(vec1, vec2) {
@@ -46,18 +55,25 @@ where
 }
 
 
-/// Calculates the magnitude of a vector. The magnitude is the square root of the sum of the squares of the components.
-/// Formula: ||A|| = sqrt(A[0]^2 + A[1]^2 + ... + A[n]^2)
-/// Example:
-/// let vec = vec![3.0, 4.0];
-/// let result = vec.h_vector_magnitude();
-/// The result will be 5.0, because sqrt(3^2 + 4^2) = sqrt(9 + 16) = sqrt(25) = 5.
-/// If the vector were vec![1.0, 2.0, 2.0], the result would be 3.0, because sqrt(1^2 + 2^2 + 2^2) = sqrt(1 + 4 + 4) = sqrt(9) = 3.
-/// the reason for the formula is that that is the pythagorean theorem for n dimensions, 
-/// and since you can always make a right triangle with the vector as the hypotenuse, the magnitude is the length of the hypotenuse, which is the square root of the sum of the squares of the legs, which are the components of the vector.
-/// If the vector were vec![0.0, 0.0, 0.0], the result would be 0.0, because sqrt(0^2 + 0^2 + 0^2) = sqrt(0) = 0.
-/// it is implemented for n-dimensional space but i dont know why anyone would want to use it for more than 3 dimensions, but it is there if you need it.
-/// nut the feature is there if you need it.
+/// Trait that provides the Euclidean magnitude (length) of a vector.
+///
+/// The magnitude of a vector `A` is defined as:
+/// ```text
+/// ||A|| = sqrt(A[0]^2 + A[1]^2 + ... + A[n]^2)
+/// ```
+///
+/// This is simply the Euclidean norm and corresponds to the length of the
+/// vector in n‑dimensional space.
+///
+/// # Examples
+///
+/// ```rust
+/// let v = vec![3.0, 4.0];
+/// assert_eq!(v.h_magnitude(), 5.0);
+/// ```
+///
+/// The trait is implemented for slices whose element type can be converted into
+/// `f64`.
 pub trait Magnitude {
     fn h_magnitude(&self) -> f64;
 }
@@ -77,6 +93,16 @@ where
 
 
 
+/// Adds two vectors element-wise. The vectors must have the same length.
+/// Formula: C = A + B, where C[i] = A[i] + B[i]
+///
+/// Example:
+/// ```rust
+/// let vec1 = vec![1.0, 2.0, 3.0];
+/// let vec2 = vec![4.0, 5.0, 6.0];
+/// let result = h_vector_add(&vec1, &vec2);
+/// assert_eq!(result, vec![5.0, 7.0, 9.0]);
+/// ```
 
 pub fn h_vector_add<T, I>(vec1: &[T], vec2: &[I]) -> Vec<f64>
 where
@@ -92,6 +118,16 @@ where
         .collect()
 }
 
+/// Subtracts the second vector from the first, element‑wise. Both vectors must have
+/// the same length.
+///
+/// Example:
+/// ```rust
+/// let vec1 = vec![5.0, 7.0, 9.0];
+/// let vec2 = vec![1.0, 2.0, 3.0];
+/// let result = h_vector_sub(&vec1, &vec2);
+/// assert_eq!(result, vec![4.0, 5.0, 6.0]);
+/// ```
 pub fn h_vector_sub<T, I>(vec1: &[T], vec2: &[I]) -> Vec<f64>
 where
     T: Copy + Into<f64>,
@@ -106,8 +142,20 @@ where
         .collect()
 }
 
-pub trait VectorScalarMultiply<S> 
-where 
+/// Multiply every element of a slice by a scalar value.
+///
+/// This trait is implemented for slice types so that you can write
+/// `my_slice.h_vector_scalar_mult(k)` and receive a new `Vec<f64>` containing
+/// each element of `my_slice` multiplied by `k`.
+///
+/// # Example
+///
+/// ```rust
+/// let v = vec![1.0, 2.0, 3.0];
+/// assert_eq!(v.h_vector_scalar_mult(2.0), vec![2.0, 4.0, 6.0]);
+/// ```
+pub trait VectorScalarMultiply<S>
+where
     S: Copy + Into<f64>,
 {
     fn h_vector_scalar_mult(&self, scalar: S) -> Vec<f64>;
@@ -125,8 +173,20 @@ where
 
 
 
-pub trait VectorScalarDivision<S> 
-where 
+/// Divide every element of a slice by a scalar value.
+///
+/// Similar to [`VectorScalarMultiply`], this trait is implemented for slice types
+/// and returns a `Vec<f64>` containing each element divided by the provided
+/// scalar.
+///
+/// # Example
+///
+/// ```rust
+/// let v = vec![4.0, 6.0, 8.0];
+/// assert_eq!(v.h_vector_scalar_div(2.0), vec![2.0, 3.0, 4.0]);
+/// ```
+pub trait VectorScalarDivision<S>
+where
     S: Copy + Into<f64>,
 {
     fn h_vector_scalar_div(&self, scalar: S) -> Vec<f64>;
@@ -142,16 +202,52 @@ where
     }
 }
 
-pub fn h_angle_between_vectors<T, I>(vec1: &[T], vec2: &[I]) -> f64 
+/// Specifies the unit in which an angle is returned.
+#[derive(Debug, Eq, PartialEq)]
+pub enum Measurement {
+    /// Return the angle in radians.
+    Radians,
+    /// Return the angle in degrees.
+    Degrees,
+}
+
+/// Calculates the angle between two 2‑dimensional vectors.
+///
+/// Both `vec1` and `vec2` must have exactly two components; otherwise,
+/// the function returns `None`. If either vector has zero magnitude the
+/// angle is undefined and `None` is returned as well.
+///
+/// The result is returned in radians or degrees depending on the
+/// `return_measurement` parameter.
+///
+/// # Examples
+///
+/// ```rust
+/// use h_math::linear_algebra::{h_vectors_angle, Measurement};
+/// let a = vec![0.0, 1.0];
+/// let b = vec![1.0, 0.0];
+/// assert_eq!(h_vectors_angle(&a, &b, Measurement::Degrees).unwrap(), 90.0);
+/// ```
+pub fn h_vectors_angle<T, I>(vec1: &[T], vec2: &[I], return_measurement: Measurement) -> Option<f64> 
 where   
     T: Copy + Into<f64>,
     I: Copy + Into<f64>,
 {
+    if vec1.len() != 2 || vec2.len() != 2 {
+        return None;
+    }
     let vec1_magnitude: f64 = vec1.h_magnitude();
     let vec2_magnitude: f64 = vec2.h_magnitude();
 
+    if vec1_magnitude == 0.0 || vec2_magnitude == 0.0 {
+        return None;
+    }
+
     let angle_between: f64 = ((h_dot(vec1, vec2))/(vec1_magnitude*vec2_magnitude)).acos();
-    return angle_between;
+    match return_measurement {
+        Measurement::Radians => return Some(angle_between),
+        Measurement::Degrees => return Some(angle_between.to_degrees()),
+    }
 }
 
 #[cfg(test)]
@@ -159,10 +255,10 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_h_hadamard_product() {
+    fn test_h_hadamard() {
         let vec1 = vec![1.0, 2.0, 3.0];
         let vec2 = vec![4.0, 5.0, 6.0];
-        let result = h_hadamard_product(&vec1, &vec2);
+        let result = h_hadamard(&vec1, &vec2);
         assert_eq!(result, vec![4.0, 10.0, 18.0]);
     }
 
@@ -209,4 +305,12 @@ mod tests {
         let result = vec.h_vector_scalar_div(2.0);
         assert_eq!(result, vec![2.0, 3.0, 4.0]);
     }
+
+    #[test]
+    fn test_vectors_angle() {
+        let vec1: Vec<i32> = vec![0, 1];
+        let vec2: Vec<i32> = vec![1, 0];
+        assert_eq!(h_vectors_angle(&vec1, &vec2, Measurement::Degrees).unwrap_or(0.0), 90.0);
+    }
 }
+
