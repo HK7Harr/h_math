@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 // ------------------------------------ Finance ------------------------------------
 
 
@@ -119,30 +126,71 @@ where
 }
 
 
-pub trait BracketTax<S, E, P> 
+
+/// This trait calculates the total tax paid based on a set of tax brackets. 
+///Each tax bracket is defined by a start income, an end income, and a tax percentage. 
+/// The function will iterate through the tax brackets and calculate the tax paid for
+///  each bracket based on the income and the corresponding tax rate.
+///  The total tax paid will be the sum of the taxes calculated for each bracket. For example, 
+/// if the income is 50,000 and there are two tax brackets: (0, 30,000, 10%) and (30,000, 100,000, 20%), 
+/// the total tax paid would be (30,000 * 10%) + (20,000 * 20%) = 3,000 + 4,000 = 7,000.
+/// 
+/// it returns None if the income is less than or equal to 0, 
+/// if any tax percentage is greater than 100, 
+/// or if the tax brackets are not properly ordered (i.e., i
+/// f the start of a bracket is greater than the end of the previous bracket).
+pub trait BracketTaxPaid<Start, End, Percent> 
 where   
-    S: Copy + Into<f64>,
-    E: Copy + Into<f64>,
-    P: Copy + Into<f64>,
+    Start: Copy + Into<f64>,
+    End: Copy + Into<f64>,
+    Percent: Copy + Into<f64>,
 {
-    fn h_bracket_tax(&self, brackets: Vec<(S, E, P)>) -> Option<f64>;
+    fn h_bracket_tax_paid(&self, brackets: Vec<(Start, End, Percent)>) -> Option<f64>;
 }
 
-impl<V, S, E, P> BracketTax<S, E, P> for V 
+impl<V, Start, End, Percent> BracketTaxPaid<Start, End, Percent> for V 
 where 
-    V: Copy + Into<f64>,
-    S: Copy + Into<f64>,
-    E: Copy + Into<f64>,
-    P: Copy + Into<f64>,
+    V: Copy + PartialEq + Into<f64>,
+    Start: Copy + PartialEq + Into<f64>,
+    End: Copy + PartialEq + Into<f64>,
+    Percent: Copy + PartialEq + Into<f64>,
 {
-    fn h_bracket_tax(&self, brackets: Vec<(S, E, P)>) -> Option<f64> {
-        let mut prev_item: &Option<(S, E, P)> = &None;
+    fn h_bracket_tax_paid(&self, brackets: Vec<(Start, End, Percent)>) -> Option<f64> {
+        if (*self).into() <= 0.0 {
+            return None;
+        }
+
+        let mut prev_item: Option<&(Start, End, Percent)> = None;
+        let income: f64 = (*self).into();
+        let mut sum: f64 = 0.0;
+
         for item in &brackets {
-            if prev_item == &None {
-                prev_item = Some(item);
+            if item.2.into() > 100.0 {
+                return None;
+            }
+            if let Some(prev) = prev_item {
+                if prev.0.into() > item.0.into() || prev.1.into() >= item.1.into() {
+                    return None;
+                }
+            }
+            prev_item = Some(item);
+
+            let start: f64 = item.0.into() - 1.0;
+            let end: f64 = item.1.into();
+            let rate: f64 = item.2.into() / 100.0;
+
+            if income <= start {
+                break;
+            }
+
+            let taxable = end.min(income) - start;
+            sum += taxable * rate;
+
+            if income < end {
+                break;
             }
         }
-        return Some(0.0);
+        return Some(sum);
     }
 }
 
@@ -180,6 +228,30 @@ mod tests {
         assert_eq!(100.0.h_decrease_percent_from_original(80.0), 20.0);
         assert_eq!(200.0.h_decrease_percent_from_original(220.0), -10.0);
     }
+
+    #[test]
+    fn test_bracket_tax_paid() {
+        // full brackets
+        // 100 income, brackets: 1-50 at 10%, 51-100 at 20%
+        // 50 * 0.10 = 5.0, 50 * 0.20 = 10.0, total = 15.0
+        let brackets = vec![(1, 50, 10), (51, 100, 20)];
+        assert_eq!(100_i32.h_bracket_tax_paid(brackets), Some(15.0));
+
+        // partial bracket
+        // 75 income, brackets: 1-50 at 10%, 51-100 at 20%
+        // 50 * 0.10 = 5.0, 25 * 0.20 = 5.0, total = 10.0
+        let brackets = vec![(1, 50, 10), (51, 100, 20)];
+        assert_eq!(75_i32.h_bracket_tax_paid(brackets), Some(10.0));
+
+        // zero income returns None
+        let brackets = vec![(1, 50, 10), (51, 100, 20)];
+        assert_eq!(0_i32.h_bracket_tax_paid(brackets), None);
+
+        // invalid percent returns None
+        let brackets = vec![(1, 50, 101)];
+        assert_eq!(100_i32.h_bracket_tax_paid(brackets), None);
+}
+    
 }
 
 
