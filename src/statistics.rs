@@ -11,9 +11,7 @@
 /// The result will be 2.0, because (1.0 + 2.0 + 3.0) / 3 = 6.0 / 3 = 2.0.
 /// If the dataset were empty (vec![]), the result would be 0.0, because there are no values to average.
 /// If the dataset were vec![1.0, 2.0, 3.0, 4.0], the result would be 2.5, because (1.0 + 2.0 + 3.0 + 4.0) / 4 = 10.0 / 4 = 2.5.
-/// If the dataset were vec![1.0, 2.0, 3.0, 4.0, 5.0], the result would be 3.0, because (1.0 + 2.0 + 3.0 + 4.0 + 5.0) / 5 = 15.0 / 5 = 3.0.
-/// If the dataset were vec![1.0, 2.0, 3.0, 4.0, 5.0, 6.0], the result would be 3.5, because (1.0 + 2.0 + 3.0 + 4.0 + 5.0 + 6.0) / 6 = 21.0 / 6 = 3.5.
-/// If the dataset were vec![1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0], the result would be 4.0, because (1.0 + 2.0 + 3.0 + 4.0 + 5.0 + 6.0 + 7.0) / 7 = 28.0 / 7 = 4.0.
+
 pub trait Mean {
     fn h_mean(&self) -> f64;
 }

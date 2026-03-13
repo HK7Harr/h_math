@@ -117,6 +117,36 @@ where
         ((original_value - new_value) / original_value) * 100.0
     }
 }
+
+
+pub trait BracketTax<S, E, P> 
+where   
+    S: Copy + Into<f64>,
+    E: Copy + Into<f64>,
+    P: Copy + Into<f64>,
+{
+    fn h_bracket_tax(&self, brackets: Vec<(S, E, P)>) -> Option<f64>;
+}
+
+impl<V, S, E, P> BracketTax<S, E, P> for V 
+where 
+    V: Copy + Into<f64>,
+    S: Copy + Into<f64>,
+    E: Copy + Into<f64>,
+    P: Copy + Into<f64>,
+{
+    fn h_bracket_tax(&self, brackets: Vec<(S, E, P)>) -> Option<f64> {
+        let mut prev_item: &Option<(S, E, P)> = &None;
+        for item in &brackets {
+            if prev_item == &None {
+                prev_item = Some(item);
+            }
+        }
+        return Some(0.0);
+    }
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -151,6 +181,8 @@ mod tests {
         assert_eq!(200.0.h_decrease_percent_from_original(220.0), -10.0);
     }
 }
+
+
 
 
 
