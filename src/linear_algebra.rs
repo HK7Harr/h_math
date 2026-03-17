@@ -180,6 +180,21 @@ where
             }
         }
     }
+    pub fn add_col(&mut self, col: Vec<T>) -> Result<(), String> {
+        if col.len() != self.columm_size {
+            return Err(format!(
+                "column length {} does not match matrix row count {}",
+                col.len(),
+                self.columm_size
+            ));
+        }
+        for r in 0..self.columm_size {
+            let insert_index = (r + 1) * self.row_size + r;
+            self.data.insert(insert_index, col[r]);
+        }
+        self.row_size += 1;
+        Ok(())
+    }
 }
 
 
@@ -474,6 +489,44 @@ where
 }
 
 
+/// Computes the linear composition (matrix multiplication) of two matrices.
+///
+/// Multiplies `matrix2 * matrix1`, applying `matrix2` as a linear transform
+/// to each column of `matrix1`. The number of columns in `matrix2` must equal
+/// the number of rows in `matrix1`.
+///
+/// # Parameters
+/// - `matrix2`: the left-hand matrix, shape (m × n)
+/// - `matrix1`: the right-hand matrix, shape (n × p)
+///
+/// # Returns
+/// - `None` if `matrix2.row_size != matrix1.columm_size`
+/// - `Some(HMatrix<f64>)` of shape (m × p) on success
+///
+/// # Note
+/// The result is always `HMatrix<f64>` regardless of input type, because all
+/// values are converted to `f64` during the dot product calculations.
+///
+/// # Example
+/// 
+/// let m1 = HMatrix::new_from_rows(&[vec![1, 2], vec![3, 4]]).unwrap();
+/// let m2 = HMatrix::new_from_rows(&[vec![5, 6], vec![7, 8]]).unwrap();
+/// let result = h_linear_composition(&m2, &m1).unwrap();
+/// result is a 2x2 matrix: [[19, 22], [43, 50]]
+pub fn h_linear_composition<T>(matrix2: &HMatrix<T>, matrix1: &HMatrix<T>) -> Option<HMatrix<f64>>
+where 
+    T: Copy + Into<f64>,
+{
+    if matrix2.row_size != matrix1.columm_size {
+        return None;
+    }
+    let mut new_matrix: HMatrix<f64> = HMatrix::new();
+    for i in 0..matrix1.row_size {
+        /// this i guaranteed to be safe because of the rules already in place
+        new_matrix.add_col(matrix1.get_col(i).unwrap().h_linear_transform(&matrix2).unwrap());
+    }
+    return Some(new_matrix);
+}
 
 
 
