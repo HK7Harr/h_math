@@ -17,6 +17,14 @@ impl<T> HMatrix<T>
 where
     T: Copy + Into<f64>,
 {
+    pub fn new() -> Self {
+        HMatrix { 
+            data: Vec::new(),
+            row_size: 0, 
+            columm_size: 0 
+        }
+    }
+
     /// Creates a new `HMatrix` from a slice of rows, where each row is a vector of values.
     /// All rows must have the same length, and the slice must not be empty. If these conditions are not met, 
     /// the function returns `None`.
@@ -138,6 +146,39 @@ where
             row.push(self.data[i]);
         }
         return Some(row);
+    }
+
+    pub fn get_col(&self, index: usize) -> Option<Vec<T>> {
+        let mut columm: Vec<T> = Vec::new();
+        if index >= self.row_size {
+            return None;
+        }
+        for i in 0..self.columm_size {
+            columm.push(self.data[i * self.row_size + index]);
+        }   
+        return Some(columm);
+    }
+
+    pub fn add_row(&mut self, row: Vec<T>) -> Result<(), String> {
+        if self.columm_size == 0 && self.row_size == 0 {
+            for i in row {
+                self.data.push(i);
+                self.row_size += 1;
+            }
+            self.columm_size += 1;
+            return Ok(());
+        } else {
+            if row.len() != self.row_size {
+                return Err(String::from("The row does not have the same size as the other in the Matrix. from: HMatrix, add_row()"));
+            }
+            else {
+                for i in row {
+                    self.data.push(i);
+                }
+                self.columm_size += 1;
+                return Ok(());
+            }
+        }
     }
 }
 
@@ -431,6 +472,8 @@ where
         Some(result)
     }
 }
+
+
 
 
 
