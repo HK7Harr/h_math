@@ -226,6 +226,7 @@ impl HBlockPreformance {
     }
 }
 
+
 #[macro_export]
 macro_rules! h_block_preformance {
     ($code:block) => {
@@ -326,6 +327,7 @@ impl HBlockPreformanceLog {
         }
         ordered
     }
+    fn 
     /* 
     pub fn print(&self, order: HBlockPreformanceLogPrintOrder, fields_included: &[HBlockPreformanceField]) {
         if cfg!(debug_assertions) {
