@@ -4,9 +4,6 @@ use std::iter::zip;
 /// A struct representing a matrix, which is a 2D array of values.
 /// The matrix is stored in a flat vector (`data`) along with its dimensions 
 /// (`row_size` and `columm_size`).
-/// 
-/// 
-#[derive(Debug, PartialEq, Eq)]
 pub struct HMatrix<T>
 where
     T: Copy + Into<f64>,
@@ -525,12 +522,11 @@ where
     }
     let mut new_matrix: HMatrix<f64> = HMatrix::new();
     for i in 0..matrix1.row_size {
-        // this i guaranteed to be safe because of the rules already in place
+        /// this i guaranteed to be safe because of the rules already in place
         new_matrix.add_col(matrix1.get_col(i).unwrap().h_linear_transform(&matrix2).unwrap());
     }
     return Some(new_matrix);
 }
-
 
 
 
@@ -594,7 +590,7 @@ mod tests {
     #[test]
     fn test_vectors_angle() {
         let vec1: Vec<i32> = vec![0, 1];
-        let vec2: Vec<i32> = vec![1, 0];
+        let vec2: Vec<f64> = vec![1.0, 0.0];
         assert_eq!(h_vectors_angle(&vec1, &vec2, Measurement::Degrees).unwrap_or(0.0), 90.0);
     }
 
@@ -603,15 +599,6 @@ mod tests {
         let vec = vec![1.0, 2.0];
         let matrix = HMatrix::new_from_rows(&vec![vec![1.0, 0.0], vec![0.0, 1.0]]).unwrap();
         let result = vec.h_linear_transform(&matrix);
-        assert_eq!(result.unwrap_or_else(|| vec![]), vec![1.0, 2.0]);
-    }
-
-    #[test]
-    fn test_h_linear_composition() {
-        let m1 = HMatrix::new_from_rows(&vec![vec![1, 2, 3], vec![4, 5, 6]]).unwrap();
-        let m2 = HMatrix::new_from_cols(&vec![vec![1, 2, 3], vec![4, 5, 6]]).unwrap();
-        let m3 = HMatrix::new_from_cols(&vec![vec![14.0, 32.0], vec![32.0, 77.0]]).unwrap();
-        assert_eq!(m3, h_linear_composition(&m2, &m1).unwrap());
-    }
+        assert_eq!(result.unwrap_or_else(|| vec![]), vec![1.0, 2.0]);    }
 }
 

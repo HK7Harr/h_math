@@ -1,5 +1,6 @@
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
+use std::iter::zip;
 
 
 #[derive(Debug)]
@@ -157,6 +158,210 @@ where
         }
         (set, duplicates)
     }
+}
+
+use std::time::Duration;
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub struct HBlockPreformance {
+    label: Option<&'static str>,
+    duration: Duration,
+    file: &'static str,
+    line: u32,
+}
+
+impl HBlockPreformance {
+    pub fn new() -> Self {
+        HBlockPreformance { label: None, duration: Duration::new(0, 0), line: 0, file: "" }
+    }
+    pub fn set_new(label: Option<&'static str>, duration: Duration, line: u32, file: &'static str) -> Self {
+        HBlockPreformance { label: label, duration: duration, line: line, file: file}
+    }
+    pub fn print(&self) {
+        println!("label: {:?}, duration: {:?}, line: {}, file: {}", self.label, self.duration, self.line, self.file);
+    }
+    pub fn print_fields_specified(&self, fields: &[HBlockPreformanceField]) {
+        let mut count: usize = 1;
+        if fields.contains(&HBlockPreformanceField::Label) {
+            if fields.len() == count {
+                print!("label: {:?}\n", self.label);
+            }
+            else {
+                print!("label: {:?}, ", self.label);
+            }
+            count += 1;
+        } 
+        if fields.contains(&HBlockPreformanceField::Duration) {
+            if fields.len() == count {
+                print!("duration: {:?}\n", self.duration);
+            }
+            else {
+                print!("duration: {:?}, ", self.duration);
+            }
+            count += 1;
+        }
+        if fields.contains(&HBlockPreformanceField::File) {
+            if fields.len() == count {
+                print!("file: {:?}\n", self.file);
+            }
+            else {
+                print!("file: {:?}, ", self.file);
+            }
+        }
+        if fields.contains(&HBlockPreformanceField::Line) {
+            print!("line: {:?}\n", self.line);
+        }
+    }
+    pub fn print_label(&self) {
+        println!("label: {:?}", self.label);
+    }
+    pub fn print_duration(&self) {
+        println!("duration: {:?}", self.duration);
+    }
+    pub fn print_file(&self) {
+        println!("label: {}", self.file);
+    }
+    pub fn print_line(&self) {
+        println!("line: {}", self.line);
+    }
+}
+
+#[macro_export]
+macro_rules! h_block_preformance {
+    ($code:block) => {
+        {
+            let start = std::time::Instant::now();
+            $code
+            HBlockPreformance::set_new(None, start.elapsed(), line!(), file!())
+        }
+    };
+}
+
+
+#[derive(Debug, PartialEq, Eq)]
+pub enum HBlockPreformanceLogPrintOrder {
+    Normal,
+
+    LabelAlphabeticAscending,
+    LabelAlphabeticDescending,
+
+    DurationAscending,
+    DurationDescending,
+
+    FileAlphabeticalAscending,
+    FileAlphabeticalDescending,
+
+    LineAscending,
+    LineDescending,
+}
+
+
+#[derive(Debug, PartialEq, Eq)]
+pub enum HBlockPreformanceField {
+    Label,
+    Duration,
+    File,
+    Line,
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub struct HBlockPreformanceLog {
+    log: Vec<HBlockPreformance>,
+    labels: Vec<Option<&'static str>>,
+    files: Vec<&'static str>,
+    lines: Vec<u32>,
+}
+
+impl HBlockPreformanceLog {
+    pub fn new() -> Self {
+        HBlockPreformanceLog { log: Vec::new(), labels: Vec::new(), files: Vec::new(), lines: Vec::new() }
+    }
+    pub fn push(&mut self, new: HBlockPreformance) {
+        if cfg!(debug_assertions) {
+            self.labels.push(new.label);
+            self.files.push(new.file);
+            self.lines.push(new.line);
+            self.log.push(new);
+        }
+    }
+    fn find_new_indecies(&self, field: HBlockPreformanceField, old_vec: &Vec<&HBlockPreformance>, new_vec: &Vec<&HBlockPreformance>) -> Vec<usize> { // returns &[(old index, new index)]
+        let mut indecies: Vec<usize> = Vec::new();
+        for i in old_vec {
+            let mut new_index: usize = 0;
+            
+            for j in new_vec {
+                if field == HBlockPreformanceField::Label {
+                    if i.label == j.label {
+                        new_index += 1;
+                        break;
+                    }
+                }
+                if field == HBlockPreformanceField::Duration {
+                    if i.duration == j.duration {
+                        new_index += 1;
+                        break;
+                    }
+                }
+                if field == HBlockPreformanceField::File {
+                    if i.file == j.file {
+                        new_index += 1;
+                        break;
+                    }
+                }
+                if field == HBlockPreformanceField::Line {
+                    if i.line == j.line {
+                        new_index += 1;
+                        break;
+                    }
+                }
+            }
+            indecies.push(new_index);
+        }
+        indecies
+    }
+    fn ordered_list(&self, new_indecies: Vec<usize>, normal_ref_list: &Vec<&'static HBlockPreformance>) -> Vec<&HBlockPreformance> {
+        let mut ordered: Vec<&HBlockPreformance> = Vec::new();
+        for index in new_indecies {
+            ordered.push(normal_ref_list[index]);
+        }
+        ordered
+    }
+    /* 
+    pub fn print(&self, order: HBlockPreformanceLogPrintOrder, fields_included: &[HBlockPreformanceField]) {
+        if cfg!(debug_assertions) {
+            let logged_blocks: Vec<&HBlockPreformance> = self.log.iter().collect();
+           
+            
+            if order == HBlockPreformanceLogPrintOrder::LabelAlphabeticAscending {
+                let mut labels_normal: Vec<&Option<&'static str>> = self.labels.iter().collect();
+                labels_normal.sort();
+                let mut logged_blocks_label_sorted: Vec<&HBlockPreformance> = self.log.iter().collect();
+                for (a, b) in zip(&mut logged_blocks_label_sorted, labels_normal) {
+                    a.label = *b;
+                }
+                let new_indecies: Vec<usize> = self.find_new_indecies(HBlockPreformanceField::Label, &logged_blocks, &logged_blocks_label_sorted);       
+            }
+
+            for item     in &self.log {
+               
+            }
+        }
+    }
+    */
+
+    
+}
+#[macro_export]
+macro_rules! h_block_preformance_log {
+    ($logger_struct:expr, $code:block) => {
+        {
+            if cfg!(debug_assertions) {
+                let start = std::time::Instant::now();
+                $code
+                $logger_struct.push(HBlockPreformance::set_new(None, start.elapsed(), line!(), file!()))
+            } 
+        }
+    };
 }
 
 
