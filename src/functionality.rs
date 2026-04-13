@@ -1,5 +1,6 @@
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
+use std::iter::zip;
 
 
 #[derive(Debug)]
@@ -284,7 +285,7 @@ impl HBlockPreformanceLog {
             self.log.push(new);
         }
     }
-    fn find_new_indecies(&self, field: HBlockPreformanceField, old_vec: &Vec<&HBlockPreformance>, new_vec: &Vec<&HBlockPreformance>) -> Vec<usize> { // returns &[(old index, new index)]
+    fn find_new_indecies(&self, field: HBlockPreformanceField, old_vec: &Vec<&HBlockPreformance>, new_vec: &Vec<&mut HBlockPreformance>) -> Vec<usize> { // returns &[(old index, new index)]
         let mut indecies: Vec<usize> = Vec::new();
         for i in old_vec {
             let mut new_index: usize = 0;
@@ -319,28 +320,31 @@ impl HBlockPreformanceLog {
         }
         indecies
     }
-    fn ordered_list(&self, new_indecies: Vec<usize>, normal_ref_list: &Vec<&'static HBlockPreformance>) -> Vec<&HBlockPreformance> {
-        let mut ordered: Vec<&HBlockPreformance> = Vec::new();
+    fn ordered_list<'a>(&self, new_indecies: Vec<usize>, normal_ref_list: &Vec<&'a HBlockPreformance>) -> Vec<&'a HBlockPreformance> {
+        let mut ordered: Vec<&'a HBlockPreformance> = Vec::new();
         for index in new_indecies {
             ordered.push(normal_ref_list[index]);
         }
         ordered
     }
-    fn 
-    /* 
+    
+    
     pub fn print(&self, order: HBlockPreformanceLogPrintOrder, fields_included: &[HBlockPreformanceField]) {
         if cfg!(debug_assertions) {
+            let ordered_blocks: Vec<&HBlockPreformance>;
             let logged_blocks: Vec<&HBlockPreformance> = self.log.iter().collect();
            
             
             if order == HBlockPreformanceLogPrintOrder::LabelAlphabeticAscending {
                 let mut labels_normal: Vec<&Option<&'static str>> = self.labels.iter().collect();
                 labels_normal.sort();
-                let mut logged_blocks_label_sorted: Vec<&HBlockPreformance> = self.log.iter().collect();
-                for (a, b) in zip(&mut logged_blocks_label_sorted, labels_normal) {
+                let mut logged_blocks_label_sorted: Vec<&mut HBlockPreformance> = self.log.iter_mut().collect();
+                for (a, b) in zip(logged_blocks_label_sorted, labels_normal) {
                     a.label = *b;
                 }
                 let new_indecies: Vec<usize> = self.find_new_indecies(HBlockPreformanceField::Label, &logged_blocks, &logged_blocks_label_sorted);       
+                
+                ordered_blocks = self.ordered_list(new_indecies, &logged_blocks);
             }
 
             for item     in &self.log {
@@ -348,10 +352,10 @@ impl HBlockPreformanceLog {
             }
         }
     }
-    */
-
     
 }
+    
+
 #[macro_export]
 macro_rules! h_block_preformance_log {
     ($logger_struct:expr, $code:block) => {

@@ -5,22 +5,24 @@ use std::collections::HashSet;
 
 // -------------------------------- Input Terminal ------------------------------
 
-pub fn h_input_data_single_f64(length: i32) -> Vec<f64> { // if length is <= 0; stop the inputs with: "<<"
+pub fn h_input_data_single_f64(length: Option<u32>) -> Vec<f64> { // if length is <= 0; stop the inputs with: "<<"
     let mut count: u32 = 1;
     let mut vec: Vec<f64> = vec![];
     loop {
-        if (count - 1) as i32 == length && length > 0 {
-            return vec;
+        if length != None {
+            if (count - 1) == length.unwrap() && length.unwrap() > 0 {
+                return vec;
+            }
         }
         let mut input: String = String::new();
         println!("data point {}: ", count);
         io::stdin()
         .read_line(&mut input)
         .expect("Failed to read line");
-        if length <= 0 && input.trim() == "<<" {
+        if input.trim() == ":q" {
             return vec;
         }
-        let num: f64 = input.trim().parse().expect("Please enter a valid number!");
+        let num: f64 = input.trim().parse().expect("Please enter a floating point number of 64 signed bits");
         if num == 0.0 {
             continue;
         }
@@ -29,22 +31,24 @@ pub fn h_input_data_single_f64(length: i32) -> Vec<f64> { // if length is <= 0; 
     }
 }
 
-pub fn h_input_data_single_i32(length: i32) -> Vec<i32> { // if length is <= 0; stop the inputs with: "<<"
+pub fn h_input_data_single_i32(length: Option<u32>) -> Vec<i32> { 
     let mut count: u32 = 1;
     let mut vec: Vec<i32> = vec![];
     loop {
-        if (count - 1) as i32 == length && length > 0 {
-            return vec;
+        if length != None {
+            if (count - 1) == length.unwrap() && length.unwrap() > 0 {
+                return vec;
+            }
         }
         let mut input: String = String::new();
         println!("data point {}: ", count);
         io::stdin()
         .read_line(&mut input)
         .expect("Failed to read line");
-        if length <= 0 && input.trim() == "<<" {
+        if input.trim() == ":q" {
             return vec;
         }
-        let num: i32 = input.trim().parse().expect("Please enter a valid number!");
+        let num: i32 = input.trim().parse().expect("Please enter an Integer NAX: 32 bits unsigned");
         if num == 0 {
             continue;
         }
