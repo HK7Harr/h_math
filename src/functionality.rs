@@ -244,16 +244,12 @@ pub enum HBlockPreformanceLogPrintOrder {
     Normal,
 
     LabelAlphabeticAscending,
-    LabelAlphabeticDescending,
 
     DurationAscending,
-    DurationDescending,
 
     FileAlphabeticalAscending,
-    FileAlphabeticalDescending,
 
     LineAscending,
-    LineDescending,
 }
 
 
@@ -265,6 +261,8 @@ pub enum HBlockPreformanceField {
     Line,
 }
 
+
+/* 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct HBlockPreformanceLog {
     log: Vec<HBlockPreformance>,
@@ -285,7 +283,7 @@ impl HBlockPreformanceLog {
             self.log.push(new);
         }
     }
-    fn find_new_indecies(&self, field: HBlockPreformanceField, old_vec: &Vec<&HBlockPreformance>, new_vec: &Vec<&mut HBlockPreformance>) -> Vec<usize> { // returns &[(old index, new index)]
+    fn find_new_indecies(&self, field: HBlockPreformanceField, old_vec: &Vec<&HBlockPreformance>, new_vec: &Vec<&HBlockPreformance>) -> Vec<usize> { // returns &[(old index, new index)]
         let mut indecies: Vec<usize> = Vec::new();
         for i in old_vec {
             let mut new_index: usize = 0;
@@ -331,14 +329,14 @@ impl HBlockPreformanceLog {
     
     pub fn print(&self, order: HBlockPreformanceLogPrintOrder, fields_included: &[HBlockPreformanceField]) {
         if cfg!(debug_assertions) {
-            let ordered_blocks: Vec<&HBlockPreformance>;
+            let mut ordered_blocks: Vec<&HBlockPreformance> = Vec::new();
             let logged_blocks: Vec<&HBlockPreformance> = self.log.iter().collect();
            
             
             if order == HBlockPreformanceLogPrintOrder::LabelAlphabeticAscending {
                 let mut labels_normal: Vec<&Option<&'static str>> = self.labels.iter().collect();
                 labels_normal.sort();
-                let mut logged_blocks_label_sorted: Vec<&mut HBlockPreformance> = self.log.iter_mut().collect();
+                let mut logged_blocks_label_sorted: Vec<&HBlockPreformance> = self.log.iter().collect();
                 for (a, b) in zip(logged_blocks_label_sorted, labels_normal) {
                     a.label = *b;
                 }
@@ -347,8 +345,8 @@ impl HBlockPreformanceLog {
                 ordered_blocks = self.ordered_list(new_indecies, &logged_blocks);
             }
 
-            for item     in &self.log {
-               
+            for i in ordered_blocks {
+                i.print_fields_specified(fields_included);
             }
         }
     }
@@ -369,7 +367,7 @@ macro_rules! h_block_preformance_log {
     };
 }
 
-
+*/
 #[cfg(test)]
 mod tests {
     use super::*;

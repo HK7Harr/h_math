@@ -11,5 +11,6 @@ repository = "https://github.com/HK7Harr/h_math"
 
 
 [dependencies]
+rand = "0.4"
 
 
