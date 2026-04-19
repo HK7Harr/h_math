@@ -262,7 +262,7 @@ impl ValidateInput for String {
 /// ## Variants
 ///
 /// ### 1. Stop-string mode
-/// ```rust
+/// ```rust,ignore
 /// h_input!($print, $in_type, $stop_string, $err_msg)
 /// ```
 /// Reads lines until the user enters a specific sentinel string.
@@ -277,7 +277,7 @@ impl ValidateInput for String {
 /// ---
 ///
 /// ### 2. Fixed-count mode
-/// ```rust
+/// ```rust,ignore
 /// h_input!($print, $in_type, $amount_of_inputs, $err_msg)
 /// ```
 /// Reads exactly `n` successfully parsed values.

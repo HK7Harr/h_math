@@ -522,8 +522,10 @@ where
     }
     let mut new_matrix: HMatrix<f64> = HMatrix::new();
     for i in 0..matrix1.row_size {
-        /// this i guaranteed to be safe because of the rules already in place
-        new_matrix.add_col(matrix1.get_col(i).unwrap().h_linear_transform(&matrix2).unwrap());
+        // this i guaranteed to be safe because of the rules already in place
+        if new_matrix.add_col(matrix1.get_col(i).unwrap().h_linear_transform(&matrix2).unwrap()).is_err() {
+            panic!("Critical failure, HMatrix Struct Logic has an error");
+        }
     }
     return Some(new_matrix);
 }
